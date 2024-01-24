@@ -139,7 +139,7 @@ const UserController = {
             const userId = new mongoose.Types.ObjectId(id);
 
             const user = await User.findOne({ _id: userId })
-                .select("name surname email")
+                .select("name surname email avatar")
                 .exec();
 
             if (!user) {

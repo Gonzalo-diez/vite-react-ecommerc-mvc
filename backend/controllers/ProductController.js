@@ -62,7 +62,7 @@ const ProductController = {
 
     addProduct: async (req, res, next) => {
         const { title, brand, description, price, stock, category } = req.body;
-        const userId = req.user._id;
+        const userId = req.user ? req.user._id : null;
 
         try {
             const imageName = req.file ? req.file.filename : null;

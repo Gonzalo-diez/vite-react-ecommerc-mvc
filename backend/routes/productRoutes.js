@@ -2,9 +2,12 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const ProductController = require("../controllers/ProductController");
-const passport = require("passport");
+const passport = require("../config/passport-jwt-middleware");
 
+const protectWithJWT = passport.authenticate('jwt', { session: false });
 const productRoutes = express.Router();
+productRoutes.use("/protected", protectWithJWT);
+
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
