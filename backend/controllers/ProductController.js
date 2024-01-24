@@ -1,6 +1,6 @@
+const mongoose = require("mongoose");
 const Product = require("../models/product");
 const Comment = require("../models/comment");
-const User = require("../models/user");
 
 const ProductController = {
     getAllproduct: async (req, res, next) => {
@@ -30,39 +30,21 @@ const ProductController = {
 
         try {
             const productId = new mongoose.Types.ObjectId(id);
-            const Product = await Product.findOne({ _id: productId }).exec();
+            const product = await Product.findOne({ _id: productId }).exec();
 
             if (!Product) {
                 return res.status(404).json({ error: "Product no encontrado" });
             }
 
-            return res.json(Product);
+            return res.json(product);
         } catch (err) {
             console.error('Error:', err);
             return res.status(500).json({ error: "Error en la base de datos", details: err.message });
         }
     },
 
-    getCommentsByProduct: async (req, res, next) => {
-        const ProductId = req.params.id;
-
-        try {
-            const comments = await Comment.find({ Product: ProductId }).populate('usuario').exec();
-
-            if (!comments) {
-                return res.status(404).json({ error: 'comments no encontrados' });
-            }
-
-            return res.json(comments);
-        } catch (err) {
-            console.error('Error:', err);
-            return res.status(500).json({ error: 'Error en la base de datos', details: err.message });
-        }
-    },
-
     addProduct: async (req, res, next) => {
         const { title, brand, description, price, stock, category } = req.body;
-        const userId = req.user ? req.user._id : null;
 
         try {
             const imageName = req.file ? req.file.filename : null;
@@ -72,7 +54,6 @@ const ProductController = {
             }
 
             const newProduct = new Product({
-                user: userId,
                 title,
                 brand,
                 description,
@@ -84,16 +65,9 @@ const ProductController = {
 
             await newProduct.save();
 
-            const updatedUser = await User.findOneAndUpdate(
-                { _id: userId },
-                { $push: { createdProducts: newProduct._id } },
-                { new: true }
-            ).populate('createdProducts');
-
             return res.json({
                 message: "Producto creado!!!",
                 Product: newProduct,
-                user: updatedUser,
             });
 
         } catch (err) {
@@ -147,8 +121,6 @@ const ProductController = {
             if (result.deletedCount === 0) {
                 return res.status(404).json({ error: "Producto no encontrado" });
             }
-
-            req.io.emmit("deleteProduct", {message: "Producto borrado", productId: productId})
 
             return res.json("Producto eliminado!");
         } catch (err) {

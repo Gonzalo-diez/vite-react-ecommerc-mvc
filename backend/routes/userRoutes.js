@@ -25,10 +25,6 @@ userRoutes.post("/login", UserController.login);
 userRoutes.put("/protected/editarPerfil/:userId", passport.authenticate('jwt', { session: false }), avatar.single('avatar'), UserController.editUserProfile);
 userRoutes.put("/protected/cambiarContrasena/:userId", passport.authenticate('jwt', { session: false }), UserController.changeUserPassword);
 userRoutes.get("/detalle/:id", UserController.getUserDetail);
-userRoutes.get("/protected/productos-creados/:usuarioId", passport.authenticate('jwt', { session: false }), UserController.getUserCreatedProducts);
-userRoutes.get("/protected/productos-comprados/:usuarioId", passport.authenticate('jwt', { session: false }), UserController.getUserBoughtProducts);
-userRoutes.get("/protected/productos-vendidos/:usuarioId", passport.authenticate('jwt', { session: false }), UserController.getUserSoldProducts);
-userRoutes.get("/info/:userId", UserController.getUserInfo);
 userRoutes.get("/protected/logout", passport.authenticate('jwt', { session: false }), UserController.logout);
 
 module.exports = userRoutes;

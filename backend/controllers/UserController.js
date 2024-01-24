@@ -70,68 +70,6 @@ const UserController = {
         })(req, res, next);
     },
 
-    getUserCreatedProducts: async (req, res) => {
-        const userId = req.params.userId;
-
-        try {
-            const productsCreated = await Product.find({ user: userId }).populate('user').exec();
-            return res.json(productsCreated);
-        } catch (err) {
-            return res.status(500).json({ error: "Error en la base de datos", details: err.message });
-        }
-    },
-
-    getUserBoughtProducts: async (req, res) => {
-        const userId = req.params.userId;
-
-        try {
-            const shops = await Shop.find({ user: userId }).populate('Products.Product').exec();
-            const BoughtProducts = shops.flatMap(Shop => Shop.Products.map(item => item.Product));
-
-            return res.json(BoughtProducts);
-        } catch (err) {
-            return res.status(500).json({ error: "Error en la base de datos", details: err.message });
-        }
-    },
-
-    getUserSoldProducts: async (req, res) => {
-        const userId = req.params.userId;
-
-        try {
-            const SoldProducts = await Product.find({ user: userId }).exec();
-            return res.json(SoldProducts);
-        } catch (err) {
-            return res.status(500).json({ error: "Error en la base de datos", details: err.message });
-        }
-    },
-
-    getUserInfo: async (req, res) => {
-        const userId = req.params.userId;
-
-        try {
-            const createdProducts = await Product.find({ usuario: userId }).exec();
-
-            const shops = await Shop.find({ USER: userId }).populate('Products.Product').exec();
-            const BoughtProducts = [];
-
-            shops.forEach(Shop => {
-                Shop.Products.forEach(Product => {
-                    BoughtProducts.push(Product.Product);
-                });
-            });
-
-            const SoldProducts = await Product.find({ 'shops.usuario': userId }).exec();
-
-            return res.json({
-                createdProducts,
-                BoughtProducts,
-                SoldProducts
-            });
-        } catch (err) {
-            return res.status(500).json({ error: "Error en la base de datos", details: err.message });
-        }
-    },
-
     getUserDetail: async (req, res) => {
         const id = req.params.id;
 

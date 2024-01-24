@@ -6,8 +6,8 @@ const protectWithJWT = passport.authenticate('jwt', { session: false });
 const commentRoutes = express.Router();
 commentRoutes.use("/protected", protectWithJWT);
 
-commentRoutes.post("/protected/comentarios/agregar", passport.authenticate('jwt', { session: false }), CommentController.addComment);
-commentRoutes.put("/protected/comentarios/editar/:id", passport.authenticate('jwt', { session: false }), CommentController.editComment);
-commentRoutes.delete("/protected/comentarios/borrar/:id", passport.authenticate('jwt', { session: false }), CommentController.deleteComment);
+commentRoutes.post("/protected/agregar", passport.authenticate('jwt', { session: false }), CommentController.addComment);
+commentRoutes.put("/protected/editar/:id", passport.authenticate('jwt', { session: false }), CommentController.editComment);
+commentRoutes.delete("/protected/borrar/:id", passport.authenticate('jwt', { session: false }), CommentController.deleteComment);
 
 module.exports = commentRoutes;

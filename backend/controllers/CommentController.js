@@ -14,8 +14,6 @@ const CommentController = {
 
             await newComment.save();
 
-            req.io.emit("newComment", { message: "Nuevo comentario agregado", comment: newComment });
-
             return res.json('Comentario agregado');
         } catch (err) {
             console.error('Error al guardar el comentario:', err);
@@ -38,8 +36,6 @@ const CommentController = {
                 return res.status(404).json({ error: 'Comentario no encontrado' });
             }
 
-            req.io.emit("editComment", { message: "Comentario editado", comment: updatedComment });
-
             return res.json('Comentario actualizado');
         } catch (err) {
             console.error('Error en la actualización del comentario:', err);
@@ -56,8 +52,6 @@ const CommentController = {
             if (result.deletedCount === 0) {
                 return res.status(404).json({ error: 'Comentario no encontrado' });
             }
-
-            req.io.emit("deleteComment", { message: "Comentario eliminado", commentId: commentId });
 
             return res.json('Comentario eliminado');
         } catch (err) {
