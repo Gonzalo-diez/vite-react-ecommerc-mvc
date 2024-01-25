@@ -14,15 +14,15 @@ const storage = multer.diskStorage({
         cb(null, "uploads");
     },
     filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+        cb(null, file.originalname);
     },
 });
+
 
 const upload = multer({ storage: storage });
 
 productRoutes.get("/", ProductController.getAllproduct);
-productRoutes.get("/categoria/:category", ProductController.getproductByCategory);
+productRoutes.get("/:category", ProductController.getproductByCategory);
 productRoutes.get("/detalle/:id", ProductController.getProductDetail);
 productRoutes.post("/protected/agregar", passport.authenticate('jwt', { session: false }), upload.single("image"), ProductController.addProduct);
 productRoutes.put("/protected/editar/:id", passport.authenticate('jwt', { session: false }), upload.single("image"), ProductController.updateProduct);

@@ -1,0 +1,130 @@
+/* === Ajustes generales ===*/
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; 
+}
+
+.alert {
+    height: 30vh;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 50vh;
+}
+
+/* === Home ===*/
+.home-container {
+    padding: 40px 0;
+}
+
+.cta-buttons {
+    margin-top: 20px;
+}
+
+
+/* === About ===*/ 
+.logos-container {
+    display: flex;
+}
+
+.logos {
+    width: 6%;
+    margin-right: 40px;
+}
+
+/* === Detalle de productos ===*/
+.card-producto {
+    width: 20rem;
+    height: 100%;
+}  
+
+/* === Categoria === */
+.card-categoria {
+    width: 80%;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.card-image {
+    max-height: 450px;
+    aspect-ratio: 3/2;
+    object-fit: contain;
+}
+
+/* === Comentarios === */
+.comentarios-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.comentarios-container .btn-comentario {
+    margin-top: 8px;
+    margin-left: 16px;
+}
+
+/* === Formulario eliminar producto ===*/
+.eliminar-container img {
+    width: 20%;
+}
+
+.agregar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.carrito-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 30vh;
+}
+
+.carrito-container .btn-eliminar {
+    margin-left: 5px;
+}
+
+.compra-form {
+    margin-bottom: 2rem;
+}
+
+.compra-form .btn-comprar {
+    margin-top: 15px;
+    margin-left: 25%;
+}
+
+/* === Footer ===*/
+.footer-container {
+    background-color: #f8f9fa;
+    padding: 20px 0;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.footer-links a {
+    text-decoration: none;
+    color: #333;
+}
+
+.footer-links a:hover {
+    color: #007bff;
+}

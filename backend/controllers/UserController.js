@@ -3,8 +3,7 @@ const jwt = require('jsonwebtoken');
 const config = require("../config/config");
 const passport = require("passport");
 const User = require("../models/user");
-const Product = require("../models/product");
-const Shop = require("../models/shop");
+
 
 const UserController = {
     register: async (req, res, next) => {

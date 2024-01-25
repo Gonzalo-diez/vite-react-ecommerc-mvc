@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const Product = require("../models/product");
-const Comment = require("../models/comment");
 
 const ProductController = {
     getAllproduct: async (req, res, next) => {
@@ -14,10 +13,10 @@ const ProductController = {
     },
 
     getproductByCategory: async (req, res, next) => {
-        const categoria = req.params.categoria;
+        const category = req.params.category;
 
         try {
-            const product = await Product.find({ categoria }).exec();
+            const product = await Product.find({ category }).exec();
             return res.json(product);
         } catch (err) {
             console.error('Error:', err);
