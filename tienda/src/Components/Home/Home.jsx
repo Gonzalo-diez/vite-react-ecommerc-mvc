@@ -74,7 +74,7 @@ function Home({isAuthenticated}) {
           {products.map((product) => (
             <Col key={product._id} md={4}>
               <Card className="mb-3 card-inicio">
-                <Card.Img variant="top" src={product.image} alt={product.title} className="img-fluid card-image" />
+                <Card.Img variant="top" src={`http://localhost:8800/${product.image}`} alt={product.title} className="img-fluid card-image" />
                 <Card.Body>
                   <Card.Title>{product.title}</Card.Title>
                   <Card.Text>marca: {product.brand}</Card.Text>

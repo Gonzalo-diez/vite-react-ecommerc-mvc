@@ -48,7 +48,7 @@ function App() {
           <Route path="/usuarios/protected/editarPerfil/:id" element={<EditarPerfil />} />
           <Route path="/usuarios/protected/cambiarContrasena/:id" element={<EditarPassword />} />
           <Route path="/productos/detalle/:id" element={<Producto isAuthenticated={isAuthenticated} addToCart={addToCart} user={user} />} />
-          <Route path="/productos/:categoria" element={<ProductoCategoria />} />
+          <Route path="/productos/:category" element={<ProductoCategoria />} />
           <Route path="/productos/protected/agregar" element={<AgregarProductos isAuthenticated={isAuthenticated} />} />
           <Route path="/productos/protected/borrar/:id" element={<BorrarProducto isAuthenticated={isAuthenticated} />} />
           <Route path="/productos/protected/editar/:id" element={<EditarProducto isAuthenticated={isAuthenticated} />} />

@@ -19,6 +19,7 @@ function Producto({ isAuthenticated, addToCart, user }) {
     const endIndex = startIndex + COMMENTS_PER_PAGE;
     const displayedComments = comments.slice(startIndex, endIndex);
 
+    const serverUrl = "http://localhost:8800";
 
     useEffect(() => {
         const fetchProducto = async () => {
@@ -86,7 +87,7 @@ function Producto({ isAuthenticated, addToCart, user }) {
         <div className="producto-container">
             <div className="producto-details">
                 <Card key={item._id} className="text-center card-producto m-auto mt-4">
-                    <Card.Img variant="top" src={item.image} alt={item.title} />
+                    <Card.Img variant="top" src={`${serverUrl}/${item.image}`} alt={item.title} />
                     <Card.Body>
                         <Card.Title>{item.title}</Card.Title>
                         <Card.Text>marca: {item.brand}</Card.Text>

@@ -10,6 +10,8 @@ function ProductoCategoria() {
     const [product, setProduct] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
 
+    const serverUrl = "http://localhost:8800";
+
     useEffect(() => {
         const fetchProducto = async () => {
             try {
@@ -45,7 +47,7 @@ function ProductoCategoria() {
                 {currentProducts.map((item) => (
                     <Col key={item._id} md={4}>
                         <Card className="mt-5 card-categoria">
-                            <Card.Img variant="top" src={item.title} alt={item.title}  className="img-fluid card-image" />
+                            <Card.Img variant="top" src={`${serverUrl}/${item.image}`} alt={item.title}  className="img-fluid card-image" />
                             <Card.Body>
                                 <Card.Title>{item.title}</Card.Title>
                                 <Card.Text>marca: {item.brand}</Card.Text>

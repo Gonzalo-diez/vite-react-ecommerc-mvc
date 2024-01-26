@@ -8,6 +8,8 @@ function User({ isAuthenticated, user, setUser }) {
   const { userId } = useAuth();
   const navigate = useNavigate();
 
+  const serverUrl = "http://localhost:8800";
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -50,8 +52,8 @@ function User({ isAuthenticated, user, setUser }) {
                 <strong>Apellido:</strong> {user?.surname || "No disponible"}
               </ListGroupItem>
               <ListGroupItem>
-                <strong>Avatar:</strong>{" "}
-                {user?.avatar && <img src={`http://localhost:8800/avatar/${user.avatar}`} alt="Avatar" />}
+                <strong>Avatar:</strong>
+                <img src={`${serverUrl}/${user?.avatar}`} alt="Avatar" />
               </ListGroupItem>
             </ListGroup>
           </Card>

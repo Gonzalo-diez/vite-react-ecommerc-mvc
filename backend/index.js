@@ -3,6 +3,7 @@ const session = require("express-session");
 const http = require("http");
 const socketIO = require("socket.io");
 const mongoose = require("mongoose");
+const path = require("path");
 const passport = require("./config/passport-jwt-middleware");
 const cors = require("cors");
 const configurePassport = require("./config/passport");
@@ -44,6 +45,8 @@ app.use(passport.session());
 configurePassport(passport);
 
 app.use("/", routes);
+app.use(express.static(path.join(__dirname, 'uploads')));
+app.use(express.static(path.join(__dirname, 'avatar')));
 
 io.on("connection", (socket) => {
     console.log("Nuevo cliente se ha conectado");

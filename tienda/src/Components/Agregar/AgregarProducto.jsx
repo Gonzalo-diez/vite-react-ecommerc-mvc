@@ -6,7 +6,7 @@ import "../css/App.css";
 
 function AgregarProductos({ isAuthenticated }) {
   const navigate = useNavigate();
-  const [name, setName] = useState("");
+  const [title, setTitle] = useState("");
   const [brand, setBrand] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
@@ -25,7 +25,7 @@ function AgregarProductos({ isAuthenticated }) {
       const token = localStorage.getItem("jwtToken");
 
       const formData = new FormData();
-      formData.append("name", name);
+      formData.append("title", title);
       formData.append("brand", brand);
       formData.append("description", description);
       formData.append("price", price);
@@ -61,8 +61,8 @@ function AgregarProductos({ isAuthenticated }) {
           <Form.Control
             type="text"
             placeholder="Nombre del producto"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
         </Form.Group>
         <Form.Group controlId="marca">

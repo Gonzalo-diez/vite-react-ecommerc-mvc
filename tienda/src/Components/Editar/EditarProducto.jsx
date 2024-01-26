@@ -75,7 +75,7 @@ function EditarProducto({ isAuthenticated }) {
                 }
             });
 
-            console.log(response.data.message);
+            console.log(response.data);
             navigate("/");
         } catch (error) {
             console.error("Error en la actualización:", error);
@@ -85,7 +85,6 @@ function EditarProducto({ isAuthenticated }) {
     const handleEditProductImage = (e) => {
         setImage(e.target.files[0])
     }
-
 
     return (
         <div className="agregar-container">
