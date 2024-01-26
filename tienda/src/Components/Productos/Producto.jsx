@@ -5,7 +5,7 @@ import { Card, Button, Form, Toast, ToastContainer, Row, Col, Pagination } from 
 import { IoCart } from "react-icons/io5";
 import { BiSolidCommentAdd } from "react-icons/bi";
 
-function Producto({ isAuthenticated, addToCart, usuario }) {
+function Producto({ isAuthenticated, addToCart, user }) {
     const { id } = useParams();
     const [product, setProduct] = useState(null);
     const [comments, setComments] = useState([]);
@@ -17,7 +17,7 @@ function Producto({ isAuthenticated, addToCart, usuario }) {
     const COMMENTS_PER_PAGE = 3;
     const startIndex = (currentPage - 1) * COMMENTS_PER_PAGE;
     const endIndex = startIndex + COMMENTS_PER_PAGE;
-    const displayedComments = comentarios.slice(startIndex, endIndex);
+    const displayedComments = comments.slice(startIndex, endIndex);
 
 
     useEffect(() => {
@@ -78,7 +78,7 @@ function Producto({ isAuthenticated, addToCart, usuario }) {
         }
     };
 
-    if (!producto) {
+    if (!product) {
         return <p>No hay productos de esta categoria</p>;
     }
 

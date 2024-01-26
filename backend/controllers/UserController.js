@@ -89,6 +89,23 @@ const UserController = {
         }
     },
 
+    getUserById: async (req, res) => {
+        const userId = req.params.id;
+
+        try {
+            const userIdObject = new mongoose.Types.ObjectId(userId);
+
+            const user = await User.findById(userIdObject).select("name surname email avatar").exec();
+
+            if (!user) {
+                return res.status(404).json({ error: "Usuario no encontrado" });
+            }
+            return res.json(user);
+        } catch (err) {
+            return res.status(500).json({ error: "Error en la base de datos", details: err.message });
+        }
+    },
+
     editUserProfile: async (req, res) => {
         const userId = req.params.userId;
         const { name, surname, email } = req.body;

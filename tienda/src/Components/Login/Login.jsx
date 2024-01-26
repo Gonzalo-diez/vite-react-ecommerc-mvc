@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Form, Button, Toast } from 'react-bootstrap';
 import { useAuth } from "../context/AuthContext";
 
-const Login = ({ setIsAuthenticated, setUser }) => {
+const Login = ({ setIsAuthenticated }) => {
   const { setAuthenticatedUserId } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,9 +19,13 @@ const Login = ({ setIsAuthenticated, setUser }) => {
         password: password,
       });
       if (res.status === 200) {
-        setUser(res.data.usuario);
+        const token = res.data.token;
+        
+        localStorage.setItem("jwtToken", token);
+  
+        setAuthenticatedUserId(res.data.user._id);
         setIsAuthenticated(true);
-        navigate(`/`);
+        navigate(`/usuarios/${res.data.user._id}`);
       }
     } catch (err) {
       console.log(err);
@@ -53,7 +57,7 @@ const Login = ({ setIsAuthenticated, setUser }) => {
           <Button variant="primary" type="submit">
             Iniciar sesión
           </Button>
-          <Link to="/registro">Registro</Link>
+          <Link to="/usuarios/registro">Registro</Link>
         </div>
       </Form>
       <Toast

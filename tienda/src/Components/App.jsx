@@ -42,16 +42,16 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<Home isAuthenticated={isAuthenticated} />} />
-          <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUser={setUser} />} />
-          <Route path="/registro" element={<Registro setIsAuthenticated={setIsAuthenticated} setUser={setUser} />} />
+          <Route path="/usuarios/login" element={<Login setIsAuthenticated={setIsAuthenticated} setUser={setUser} />} />
+          <Route path="/usuarios/registro" element={<Registro setIsAuthenticated={setIsAuthenticated} setUser={setUser} />} />
           <Route path="/usuarios/:userId" element={<User isAuthenticated={isAuthenticated} user={user} setUser={setUser} />} />
-          <Route path="/usuarios/editarPerfil/:id" element={<EditarPerfil />} />
-          <Route path="/usuarios/cambiarContrasena/:id" element={<EditarPassword />} />
+          <Route path="/usuarios/protected/editarPerfil/:id" element={<EditarPerfil />} />
+          <Route path="/usuarios/protected/cambiarContrasena/:id" element={<EditarPassword />} />
           <Route path="/productos/detalle/:id" element={<Producto isAuthenticated={isAuthenticated} addToCart={addToCart} user={user} />} />
           <Route path="/productos/:categoria" element={<ProductoCategoria />} />
           <Route path="/productos/protected/agregar" element={<AgregarProductos isAuthenticated={isAuthenticated} />} />
-          <Route path="/productos/borrar/:id" element={<BorrarProducto isAuthenticated={isAuthenticated} />} />
-          <Route path="/productos/editar/:id" element={<EditarProducto isAuthenticated={isAuthenticated} />} />
+          <Route path="/productos/protected/borrar/:id" element={<BorrarProducto isAuthenticated={isAuthenticated} />} />
+          <Route path="/productos/protected/editar/:id" element={<EditarProducto isAuthenticated={isAuthenticated} />} />
           <Route path="/carrito" element={<Carrito cart={cart} removeFromCart={removeFromCart} />} />
         </Routes>
       </Layout>

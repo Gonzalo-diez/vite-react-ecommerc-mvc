@@ -10,6 +10,7 @@ const EditarPerfil = () => {
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
     const [email, setEmail] = useState('');
+    const [avatar, setAvatar] = useState('');
 
     useEffect(() => {
         const fetchPerfil = async () => {
@@ -27,6 +28,7 @@ const EditarPerfil = () => {
                 setName(user.name);
                 setSurname(user.surname);
                 setEmail(user.email);
+                setAvatar(user.avatar);
             } catch (error) {
                 console.error("Error al obtener el usuario:", error);
             }
@@ -38,18 +40,30 @@ const EditarPerfil = () => {
 
     const handleGuardarCambios = async () => {
         try {
-            const response = await axios.put(`/usuarios/protected/editarPerfil/${userId}`, {
+            const token = localStorage.getItem("jwtToken");
+
+            const response = await axios.put(`http://localhost:8800/usuarios/protected/editarPerfil/${userId}`, {
                 name,
                 surname,
                 email,
+                avatar,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`, 
+                },
             });
 
             console.log('Respuesta del servidor:', response.data);
 
         } catch (error) {
-            console.error('Error al guardar cambios:', error.message);
+            console.error('Error al guardar cambios:', error.response || error.message);
         }
     };
+
+    const handleEditAvatar = (e) => {
+        setAvatar(e.target.files[0])
+    }
 
     return (
         <Container>
@@ -84,6 +98,10 @@ const EditarPerfil = () => {
                             onChange={(e) => setEmail(e.target.value)}
                         />
 
+                        <Form.Control
+                            type="file"
+                            onChange={handleEditAvatar}
+                        />
                         <Button variant="primary" onClick={handleGuardarCambios}>
                             Guardar Cambios
                         </Button>

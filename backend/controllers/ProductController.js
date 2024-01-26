@@ -42,6 +42,20 @@ const ProductController = {
         }
     },
 
+
+    getCommentsByProduct: async (req, res, next) => {
+        const productId = req.params.id;
+    
+        try {
+          const comments = await Comment.find({ productId }).exec();
+    
+          return res.json(comments);
+        } catch (err) {
+          console.error('Error:', err);
+          return res.status(500).json({ error: "Error en la base de datos", details: err.message });
+        }
+    },
+
     addProduct: async (req, res, next) => {
         const { title, brand, description, price, stock, category } = req.body;
 

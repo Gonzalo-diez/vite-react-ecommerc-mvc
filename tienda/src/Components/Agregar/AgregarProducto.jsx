@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
-import { useAuth } from "../context/AuthContext";
 import "../css/App.css";
 
 function AgregarProductos({ isAuthenticated }) {
-  const { userId } = useAuth();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [brand, setBrand] = useState("");
@@ -15,22 +13,6 @@ function AgregarProductos({ isAuthenticated }) {
   const [stock, setStock] = useState("");
   const [image, setImage] = useState("");
   const [category, setCategory] = useState("");
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await axios.get(`http://localhost:8800/usuarios/detalle/${userId}`);
-        setUser(response.data);
-      } catch (error) {
-        console.error("Error al obtener información del usuario:", error);
-      }
-    };
-
-    if (isAuthenticated) {
-      fetchUser();
-    }
-  }, [isAuthenticated]);
 
   const handleAgregar = async () => {
     if (!isAuthenticated) {
@@ -40,29 +22,35 @@ function AgregarProductos({ isAuthenticated }) {
     }
 
     try {
-      const response = await axios.post("http://localhost:8800/productos/protected/agregar", {
-        name,
-        brand,
-        description,
-        price,
-        stock,
-        category,
-        image,
-        user: userId,
+      const token = localStorage.getItem("jwtToken");
+
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("brand", brand);
+      formData.append("description", description);
+      formData.append("price", price);
+      formData.append("stock", stock);
+      formData.append("category", category);
+      formData.append("image", image);
+
+      const response = await axios.post("http://localhost:8800/productos/protected/agregar", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       console.log(response.data.message);
-
-      setUser(prevUsuario => ({
-        ...prevUsuario,
-        productosCreados: [...prevUsuario.productosCreados, response.data.producto._id],
-      }));
 
       navigate("/");
     } catch (error) {
       console.error("Error al agregar producto:", error);
     }
   };
+
+  const handleSaveImage = (e) => {
+    setImage(e.target.files[0]);
+  }
 
   return (
     <div className="agregar-container">
@@ -117,8 +105,7 @@ function AgregarProductos({ isAuthenticated }) {
           <Form.Label>Imagen:</Form.Label>
           <Form.Control
             type="file"
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
+            onChange={handleSaveImage}
           />
         </Form.Group>
         <Form.Group controlId="categoria">

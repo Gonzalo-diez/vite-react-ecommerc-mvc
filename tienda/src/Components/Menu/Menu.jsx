@@ -31,7 +31,7 @@ function Menu({ isAuthenticated }) {
                             <Nav.Link as={Link} to="/productos/tecnologia">Tecnologia</Nav.Link>
                             <Nav.Link as={Link} to="/productos/vestimenta">Vestimenta</Nav.Link>
                             <Nav.Link as={Link} to="/productos/libros">Libros</Nav.Link>
-                            <Nav.Link as={Link} to="/login"><FaUser /></Nav.Link>
+                            <Nav.Link as={Link} to="/usuarios/login"><FaUser /></Nav.Link>
                         </Nav>
                     )}
                 </Navbar.Collapse>

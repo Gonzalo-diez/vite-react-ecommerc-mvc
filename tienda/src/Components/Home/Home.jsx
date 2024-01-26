@@ -56,10 +56,10 @@ function Home({isAuthenticated}) {
                   creese una cuenta.
                 </h3>
                 <div className="cta-buttons">
-                  <Link to="/login" className="btn btn-primary">
+                  <Link to="/usuarios/login" className="btn btn-primary">
                     Login
                   </Link>
-                  <Link to="/registro" className="btn btn-outline-primary">
+                  <Link to="/usuarios/registro" className="btn btn-outline-primary">
                     Registro
                   </Link>
                 </div>

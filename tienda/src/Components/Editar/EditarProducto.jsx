@@ -15,31 +15,36 @@ function EditarProducto({ isAuthenticated }) {
     const [category, setCategory] = useState("");
     const [image, setImage] = useState("");
 
+    const token = localStorage.getItem("jwtToken");
+
     useEffect(() => {
         const fetchProducto = async () => {
             try {
-                const response = await axios.get(`http://localhost:8800/productos/detalle/${id}`);
-                const producto = response.data;
+                const response = await axios.get(`http://localhost:8800/productos/detalle/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    }
+                });
+                const product = response.data;
 
-                if (!producto) {
+                if (!product) {
                     console.error("Producto no encontrado");
                     return;
                 }
 
-                setName(producto.name);
-                setBrand(producto.brand);
-                setDescription(producto.description);
-                setPrice(producto.price);
-                setStock(producto.stock);
-                setCategory(producto.category);
-                setImage(producto.image);
+                setName(product.name);
+                setBrand(product.brand);
+                setDescription(product.description);
+                setPrice(product.price);
+                setStock(product.stock);
+                setCategory(product.category);
+                setImage(product.image);
             } catch (error) {
                 console.error("Error al obtener el producto:", error);
             }
         };
         fetchProducto();
     }, [id]);
-
 
     const handleActualizar = async () => {
         if (!isAuthenticated) {
@@ -66,6 +71,10 @@ function EditarProducto({ isAuthenticated }) {
                 stock,
                 category,
                 image,
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
             });
 
             console.log(response.data.message);
@@ -74,6 +83,10 @@ function EditarProducto({ isAuthenticated }) {
             console.error("Error en la actualización:", error);
         }
     };
+
+    const handleEditProductImage = (e) => {
+        setImage(e.target.files[0])
+    }
 
 
     return (
@@ -137,8 +150,7 @@ function EditarProducto({ isAuthenticated }) {
                     <Form.Label>imagen:</Form.Label>
                     <Form.Control
                         type="file"
-                        value={image}
-                        onChange={(e) => setImage(e.target.value)}
+                        onChange={handleEditProductImage}
                     />
                 </Form.Group>
                 <Button variant="primary" onClick={handleActualizar} className="button-link-container">Actualizar</Button>
