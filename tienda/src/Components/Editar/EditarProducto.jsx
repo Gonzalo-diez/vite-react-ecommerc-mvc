@@ -7,7 +7,7 @@ import "../css/App.css";
 function EditarProducto({ isAuthenticated }) {
     const { id } = useParams();
     const navigate = useNavigate();
-    const [name, setName] = useState("");
+    const [title, setTitle] = useState("");
     const [brand, setBrand] = useState("");
     const [description, setDescription] = useState("");
     const [price, setPrice] = useState("");
@@ -20,11 +20,7 @@ function EditarProducto({ isAuthenticated }) {
     useEffect(() => {
         const fetchProducto = async () => {
             try {
-                const response = await axios.get(`http://localhost:8800/productos/detalle/${id}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    }
-                });
+                const response = await axios.get(`http://localhost:8800/productos/detalle/${id}`);
                 const product = response.data;
 
                 if (!product) {
@@ -32,7 +28,7 @@ function EditarProducto({ isAuthenticated }) {
                     return;
                 }
 
-                setName(product.name);
+                setTitle(product.title);
                 setBrand(product.brand);
                 setDescription(product.description);
                 setPrice(product.price);
@@ -53,8 +49,17 @@ function EditarProducto({ isAuthenticated }) {
             return;
         }
         try {
+            const formData = new FormData();
+            formData.append("title", title);
+            formData.append("brand", brand);
+            formData.append("description", description);
+            formData.append("price", price);
+            formData.append("stock", stock);
+            formData.append("category", category);
+            formData.append("image", image);
+            
             console.log("Datos a enviar:", {
-                name,
+                title,
                 brand,
                 description,
                 price,
@@ -63,17 +68,10 @@ function EditarProducto({ isAuthenticated }) {
                 image,
             });
 
-            const response = await axios.put(`http://localhost:8800/productos/protected/editar/${id}`, {
-                name,
-                brand,
-                description,
-                price,
-                stock,
-                category,
-                image,
-            }, {
+            const response = await axios.put(`http://localhost:8800/productos/protected/editar/${id}`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data",
                 }
             });
 
@@ -98,8 +96,8 @@ function EditarProducto({ isAuthenticated }) {
                     <Form.Control
                         type="text"
                         placeholder="Nombre del producto"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
                     />
                 </Form.Group>
                 <Form.Group controlId="marca">

@@ -45,9 +45,9 @@ function ProductoCategoria() {
                 {currentProducts.map((item) => (
                     <Col key={item._id} md={4}>
                         <Card className="mt-5 card-categoria">
-                            <Card.Img variant="top" src={item.image} alt={item.name}  className="img-fluid card-image" />
+                            <Card.Img variant="top" src={item.title} alt={item.title}  className="img-fluid card-image" />
                             <Card.Body>
-                                <Card.Title>{item.name}</Card.Title>
+                                <Card.Title>{item.title}</Card.Title>
                                 <Card.Text>marca: {item.brand}</Card.Text>
                                 <Card.Text>$<strong>{item.price}</strong></Card.Text>
                                 <Card.Text>Cantidad: {item.stock}</Card.Text>

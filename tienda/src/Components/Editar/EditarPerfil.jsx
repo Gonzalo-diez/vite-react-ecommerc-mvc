@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import axios from "axios";
-import { useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const EditarPerfil = () => {
-    const { id } = useParams();
     const { userId } = useAuth();
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
@@ -42,12 +40,13 @@ const EditarPerfil = () => {
         try {
             const token = localStorage.getItem("jwtToken");
 
-            const response = await axios.put(`http://localhost:8800/usuarios/protected/editarPerfil/${userId}`, {
-                name,
-                surname,
-                email,
-                avatar,
-            },
+            const formData = new FormData();
+            formData.append("name", name);
+            formData.append("surname", surname);
+            formData.append("email", email);
+            formData.append("avatar", avatar);
+
+            const response = await axios.put(`http://localhost:8800/usuarios/protected/editarPerfil/${userId}`, formData,
             {
                 headers: {
                     Authorization: `Bearer ${token}`, 

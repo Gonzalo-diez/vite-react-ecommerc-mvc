@@ -26,21 +26,21 @@ const ProductController = {
 
     getProductDetail: async (req, res, next) => {
         const id = req.params.id;
-
+    
         try {
             const productId = new mongoose.Types.ObjectId(id);
             const product = await Product.findOne({ _id: productId }).exec();
-
-            if (!Product) {
-                return res.status(404).json({ error: "Product no encontrado" });
+    
+            if (!product) {
+                return res.status(404).json({ error: "Producto no encontrado" });
             }
-
+    
             return res.json(product);
         } catch (err) {
             console.error('Error:', err);
             return res.status(500).json({ error: "Error en la base de datos", details: err.message });
         }
-    },
+    },    
 
 
     getCommentsByProduct: async (req, res, next) => {

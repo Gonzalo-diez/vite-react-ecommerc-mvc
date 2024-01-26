@@ -86,9 +86,9 @@ function Producto({ isAuthenticated, addToCart, user }) {
         <div className="producto-container">
             <div className="producto-details">
                 <Card key={item._id} className="text-center card-producto m-auto mt-4">
-                    <Card.Img variant="top" src={item.image} alt={item.name} />
+                    <Card.Img variant="top" src={item.image} alt={item.title} />
                     <Card.Body>
-                        <Card.Title>{item.name}</Card.Title>
+                        <Card.Title>{item.title}</Card.Title>
                         <Card.Text>marca: {item.brand}</Card.Text>
                         <Card.Text>$<strong>{item.price}</strong></Card.Text>
                         <Card.Text>Cantidad: {item.stock}</Card.Text>

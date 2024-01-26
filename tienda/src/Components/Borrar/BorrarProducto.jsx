@@ -27,7 +27,13 @@ function BorrarProducto({ isAuthenticated }) {
             return;
         }
         try {
-            await axios.delete(`http://localhost:8800/productos/protected/borrar/${id}`);
+            const token = localStorage.getItem("jwtToken");
+
+            await axios.delete(`http://localhost:8800/productos/protected/borrar/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
             navigate("/", { replace: true });
         } catch (error) {
             console.error("Error al eliminar producto:", error);
