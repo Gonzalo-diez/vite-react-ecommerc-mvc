@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Comment = require("../models/comment")
 const Product = require("../models/product");
 
 const ProductController = {

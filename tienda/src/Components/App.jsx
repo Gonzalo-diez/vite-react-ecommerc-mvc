@@ -38,7 +38,7 @@ function App() {
 
   return (
     <>
-      <Menu isAuthenticated={isAuthenticated} />
+      <Menu isAuthenticated={isAuthenticated} user={user} />
       <Layout>
         <Routes>
           <Route path="/" element={<Home isAuthenticated={isAuthenticated} />} />

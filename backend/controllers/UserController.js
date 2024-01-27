@@ -157,8 +157,22 @@ const UserController = {
     },
 
     logout: (req, res) => {
-        req.logout();
-        res.json({ message: "Sesión cerrada exitosamente" });
+        try {
+            if (!req.isAuthenticated()) {
+                return res.status(401).json({ error: "No hay una sesión activa para cerrar" });
+            }
+            req.logout((err) => {
+                if (err) {
+                    console.error('Error al cerrar sesión:', err);
+                    return res.status(500).json({ error: 'Error al cerrar sesión' });
+                }
+        
+                res.json({ message: 'Sesión cerrada exitosamente' });
+            });
+        } catch (error) {
+            console.error('Error al cerrar sesión:', error);
+            res.status(500).json({ error: "Error al cerrar sesión", details: error.message });
+        }
     },
 };
 

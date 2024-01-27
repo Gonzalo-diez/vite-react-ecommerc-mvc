@@ -17,6 +17,13 @@ body, html {
     height: 50vh;
 }
 
+/* === Menu ===*/
+.avatar {
+    width: 35px;
+    height: 30px;
+    border-radius: 50%;
+}
+
 /* === Home ===*/
 .home-container {
     padding: 40px 0;

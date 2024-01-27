@@ -9,6 +9,8 @@ function Home({isAuthenticated}) {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
+  const token = localStorage.getItem("jwtToken");
+
   useEffect(() => {
     const fetchProductos = async () => {
       try {
@@ -83,7 +85,7 @@ function Home({isAuthenticated}) {
                   <Card.Text>Cantidad: {product.stock}</Card.Text>
                   <div className="d-flex justify-content-between">
                     <Button variant="primary" onClick={() => navigate(`/productos/detalle/${product._id}`)}>Ver más</Button>
-                    {isAuthenticated && (
+                    {isAuthenticated && token && (
                       <div className="inicio-link-container">
                         <Button variant="warning" onClick={() => navigate(`/productos/protected/editar/${product._id}`)}><IoPencil /></Button>
                         <Button variant="danger" onClick={() => handleEliminarProducto(product._id)}><IoTrash /></Button>
