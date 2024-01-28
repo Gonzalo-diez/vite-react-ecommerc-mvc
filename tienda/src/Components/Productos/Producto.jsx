@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Card, Button, Form, Toast, ToastContainer, Row, Col, Pagination } from 'react-bootstrap';
 import { IoCart } from "react-icons/io5";
@@ -34,7 +34,7 @@ function Producto({ isAuthenticated, addToCart, user }) {
                 }
         
                 const comentariosRes = await axios.get(`${serverUrl}/productos/comentarios/${id}`);
-                console.log('Comentarios obtenidos:', comentariosRes.data); // Agrega esta línea
+                console.log('Comentarios obtenidos:', comentariosRes.data);
                 setComments(comentariosRes.data);
             } catch (err) {
                 console.log(err);
@@ -44,7 +44,7 @@ function Producto({ isAuthenticated, addToCart, user }) {
     }, [id, isAuthenticated, user]);
 
     const handleAddToCart = () => {
-        addToCart(item);
+        addToCart(product);
         setShowToast(true);
     };
 
@@ -78,15 +78,11 @@ function Producto({ isAuthenticated, addToCart, user }) {
                     },
                 });
     
-                if (response.status === 201) {
-                    await new Promise(resolve => setTimeout(resolve, 500));
-    
+                if (response.status === 200) {
                     const comentariosRes = await axios.get(`${serverUrl}/productos/comentarios/${id}`);
                     setComments(comentariosRes.data);
                     setNewComment("");
                     setShowToastComentario(true);
-                } else {
-                    console.error('Error al agregar el comentario:', response.data);
                 }
             } catch (err) {
                 console.error('Error al agregar el comentario:', err);

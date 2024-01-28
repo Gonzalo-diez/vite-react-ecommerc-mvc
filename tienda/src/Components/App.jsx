@@ -49,7 +49,7 @@ function App() {
           <Route path="/usuarios/protected/cambiarContrasena/:userId" element={<EditarPassword />} />
           <Route path="/productos/detalle/:id" element={<Producto isAuthenticated={isAuthenticated} addToCart={addToCart} user={user} />} />
           <Route path="/productos/:category" element={<ProductoCategoria />} />
-          <Route path="/productos/protected/agregar" element={<AgregarProductos isAuthenticated={isAuthenticated} />} />
+          <Route path="/productos/protected/agregar" element={<AgregarProductos isAuthenticated={isAuthenticated} user={user} />} />
           <Route path="/productos/protected/borrar/:id" element={<BorrarProducto isAuthenticated={isAuthenticated} />} />
           <Route path="/productos/protected/editar/:id" element={<EditarProducto isAuthenticated={isAuthenticated} />} />
           <Route path="/carrito/protected/comprar" element={<Carrito cart={cart} removeFromCart={removeFromCart} isAuthenticated={isAuthenticated} user={user} />} />

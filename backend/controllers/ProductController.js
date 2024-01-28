@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Comment = require("../models/comment")
 const Product = require("../models/product");
+const User = require("../models/user");
 
 const ProductController = {
     getAllproduct: async (req, res, next) => {
@@ -60,9 +61,15 @@ const ProductController = {
     
 
     addProduct: async (req, res, next) => {
-        const { title, brand, description, price, stock, category } = req.body;
+        const { title, brand, description, price, stock, category, userId } = req.body;
 
         try {
+            const user = await User.findById(userId).exec();
+            
+            if (!user) {
+                return res.status(404).json({ error: 'Producto no encontrado' });
+            }
+
             const imageName = req.file ? req.file.filename : null;
 
             if (!imageName) {
@@ -77,9 +84,13 @@ const ProductController = {
                 stock,
                 category,
                 image: imageName,
+                user: userId,
             });
 
             await newProduct.save();
+
+            user.createdProducts.push(newProduct);
+            await user.save();
 
             return res.json({
                 message: "Producto creado!!!",
@@ -94,9 +105,15 @@ const ProductController = {
 
     updateProduct: async (req, res, next) => {
         const productId = req.params.id;
-        const { title, brand, description, price, stock, category } = req.body;
+        const { title, brand, description, price, stock, category, userId } = req.body;
 
         try {
+            const user = await User.findById(userId).exec();
+            
+            if (!user) {
+                return res.status(404).json({ error: 'Producto no encontrado' });
+            }
+
             const imageName = req.file ? req.file.filename : null;
 
             if (!imageName) {
@@ -113,6 +130,7 @@ const ProductController = {
                     stock,
                     category,
                     image: imageName,
+                    user: userId,
                 },
                 { new: true }
             );

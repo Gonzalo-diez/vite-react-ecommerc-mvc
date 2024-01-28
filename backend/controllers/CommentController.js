@@ -3,10 +3,10 @@ const Product = require("../models/product");
 
 const CommentController = {
     addComment: async (req, res) => {
-        const { text, usuarioId, productId, name } = req.body; 
+        const { text, userId, productId, name } = req.body; 
 
         try {
-            const product = await Product.findById(productId).exec();
+            const product = await Product.findById(userId).exec();
             
             if (!product) {
                 return res.status(404).json({ error: 'Producto no encontrado' });
@@ -14,7 +14,7 @@ const CommentController = {
 
             const newComment = new Comment({
                 text,
-                user: usuarioId,
+                user: userId,
                 product: productId,
                 name,
             });

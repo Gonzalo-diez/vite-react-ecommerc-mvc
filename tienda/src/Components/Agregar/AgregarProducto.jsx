@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import "../css/App.css";
 
-function AgregarProductos({ isAuthenticated }) {
+function AgregarProductos({ isAuthenticated, user }) {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [brand, setBrand] = useState("");
@@ -14,6 +14,9 @@ function AgregarProductos({ isAuthenticated }) {
   const [image, setImage] = useState("");
   const [category, setCategory] = useState("");
 
+  const userId = user ? user._id : null;
+  const token = localStorage.getItem("jwtToken");
+
   const handleAgregar = async () => {
     if (!isAuthenticated) {
       console.log("Debes estar autenticado para agregar productos.");
@@ -22,8 +25,6 @@ function AgregarProductos({ isAuthenticated }) {
     }
 
     try {
-      const token = localStorage.getItem("jwtToken");
-
       const formData = new FormData();
       formData.append("title", title);
       formData.append("brand", brand);
@@ -32,6 +33,7 @@ function AgregarProductos({ isAuthenticated }) {
       formData.append("stock", stock);
       formData.append("category", category);
       formData.append("image", image);
+      formData.append("userId", userId);
 
       const response = await axios.post("http://localhost:8800/productos/protected/agregar", formData, {
         headers: {
