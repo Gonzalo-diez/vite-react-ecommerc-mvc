@@ -1,14 +1,21 @@
 const Comment = require("../models/comment");
+const Product = require("../models/product");
 
 const CommentController = {
     addComment: async (req, res) => {
-        const { text, usuarioId, productoId, name } = req.body;
+        const { text, usuarioId, productId, name } = req.body; 
 
         try {
+            const product = await Product.findById(productId).exec();
+            
+            if (!product) {
+                return res.status(404).json({ error: 'Producto no encontrado' });
+            }
+
             const newComment = new Comment({
                 text,
                 user: usuarioId,
-                product: productoId,
+                product: productId,
                 name,
             });
 

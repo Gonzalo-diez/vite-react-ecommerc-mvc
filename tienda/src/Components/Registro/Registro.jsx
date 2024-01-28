@@ -39,7 +39,7 @@ const Registro = ({ setIsAuthenticated, setUser }) => {
           setUser(userData);
           const userId = userData._id;
           setAuthenticatedUserId(userId);
-          navigate(`/usuarios/${userId}`);
+          navigate(`/usuarios/protected/${userId}`);
         } else {
           console.log("User data is missing in the response.")
         }

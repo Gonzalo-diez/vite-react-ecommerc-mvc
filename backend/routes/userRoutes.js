@@ -25,7 +25,7 @@ userRoutes.post("/login", UserController.login);
 userRoutes.put("/protected/editarPerfil/:id", passport.authenticate('jwt', { session: false }), avatar.single('avatar'), UserController.editUserProfile);
 userRoutes.put("/protected/cambiarContrasena/:userId", passport.authenticate('jwt', { session: false }), UserController.changeUserPassword);
 userRoutes.get("/detalle/:id", UserController.getUserDetail);
-userRoutes.get("/:id", UserController.getUserById)
+userRoutes.get("/protected/:id", passport.authenticate('jwt', { session: false }), UserController.getUserById)
 userRoutes.get("/protected/logout", passport.authenticate('jwt', { session: false }), UserController.logout);
 
 module.exports = userRoutes;

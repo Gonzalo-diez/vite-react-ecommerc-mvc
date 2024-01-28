@@ -25,7 +25,7 @@ const Login = ({ setIsAuthenticated }) => {
   
         setAuthenticatedUserId(res.data.user._id);
         setIsAuthenticated(true);
-        navigate(`/usuarios/${res.data.user._id}`);
+        navigate(`/usuarios/protected/${res.data.user._id}`);
       }
     } catch (err) {
       console.log(err);

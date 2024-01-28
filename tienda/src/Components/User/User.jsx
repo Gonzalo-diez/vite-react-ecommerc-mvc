@@ -9,12 +9,16 @@ function User({ isAuthenticated, user, setUser }) {
   const navigate = useNavigate();
 
   const serverUrl = "http://localhost:8800";
+  const token = localStorage.getItem("jwtToken");
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get(`http://localhost:8800/usuarios/${userId}`);
-        // Verificar si la respuesta contiene datos y la estructura esperada
+        const res = await axios.get(`http://localhost:8800/usuarios/protected/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
         if (res.data && res.data.name) {
           setUser(res.data);
         } else {

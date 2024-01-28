@@ -20,26 +20,28 @@ function Producto({ isAuthenticated, addToCart, user }) {
     const displayedComments = comments.slice(startIndex, endIndex);
 
     const serverUrl = "http://localhost:8800";
+    const token = localStorage.getItem("jwtToken");
 
     useEffect(() => {
         const fetchProducto = async () => {
             try {
                 const res = await axios.get(`${serverUrl}/productos/detalle/${id}`);
                 setProduct(res.data);
-                if(isAuthenticated && user && user._id) {
+        
+                if (isAuthenticated && user && user._id) {
                     const userRes = await axios.get(`${serverUrl}/usuarios/detalle/${user._id}`);
                     setUserName(userRes.data.name);
                 }
+        
                 const comentariosRes = await axios.get(`${serverUrl}/productos/comentarios/${id}`);
+                console.log('Comentarios obtenidos:', comentariosRes.data); // Agrega esta línea
                 setComments(comentariosRes.data);
             } catch (err) {
                 console.log(err);
             }
-        };
+        };        
         fetchProducto();
     }, [id, isAuthenticated, user]);
-
-    const item = product;
 
     const handleAddToCart = () => {
         addToCart(item);
@@ -75,8 +77,10 @@ function Producto({ isAuthenticated, addToCart, user }) {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-
+    
                 if (response.status === 201) {
+                    await new Promise(resolve => setTimeout(resolve, 500));
+    
                     const comentariosRes = await axios.get(`${serverUrl}/productos/comentarios/${id}`);
                     setComments(comentariosRes.data);
                     setNewComment("");
@@ -91,6 +95,7 @@ function Producto({ isAuthenticated, addToCart, user }) {
             alert("Debes iniciar sesión o registrarte para comentar.");
         }
     };
+    
 
     if (!product) {
         return <p>No hay productos de esta categoria</p>;
@@ -99,14 +104,14 @@ function Producto({ isAuthenticated, addToCart, user }) {
     return (
         <div className="producto-container">
             <div className="producto-details">
-                <Card key={item._id} className="text-center card-producto m-auto mt-4">
-                    <Card.Img variant="top" src={`${serverUrl}/${item.image}`} alt={item.title} />
+                <Card key={product._id} className="text-center card-producto m-auto mt-4">
+                    <Card.Img variant="top" src={`${serverUrl}/${product.image}`} alt={product.title} />
                     <Card.Body>
-                        <Card.Title>{item.title}</Card.Title>
-                        <Card.Text>marca: {item.brand}</Card.Text>
-                        <Card.Text>$<strong>{item.price}</strong></Card.Text>
-                        <Card.Text>Cantidad: {item.stock}</Card.Text>
-                        <Card.Text>{item.description}</Card.Text>
+                        <Card.Title>{product.title}</Card.Title>
+                        <Card.Text>marca: {product.brand}</Card.Text>
+                        <Card.Text>$<strong>{product.price}</strong></Card.Text>
+                        <Card.Text>Cantidad: {product.stock}</Card.Text>
+                        <Card.Text>{product.description}</Card.Text>
                         {isAuthenticated && (
                             <Button onClick={handleAddToCart} variant="primary">Agregar al Carrito <IoCart /></Button>
                         )}
