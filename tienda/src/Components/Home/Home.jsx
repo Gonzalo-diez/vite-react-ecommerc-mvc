@@ -49,7 +49,7 @@ function Home({isAuthenticated}) {
             </Col>
           </Row>
           <Row>
-            {isAuthenticated ? (
+            {isAuthenticated && token ? (
               <Button variant="primary" onClick={handleAgregarProducto} >Agregar producto</Button>
             ) : (
               <Col>

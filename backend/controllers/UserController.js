@@ -136,12 +136,12 @@ const UserController = {
 
     changeUserPassword: async (req, res) => {
         const userId = req.params.userId;
-        const { password } = req.body;
+        const { newPassword } = req.body;
 
         try {
             const updatedUser = await User.findByIdAndUpdate(
                 userId,
-                { password },
+                { password: newPassword },
                 { new: true }
             );
 

@@ -50,7 +50,7 @@ function Menu({ isAuthenticated, user }) {
                             <Nav.Link as={Link} to="/productos/tecnologia">Tecnologia</Nav.Link>
                             <Nav.Link as={Link} to="/productos/vestimenta">Vestimenta</Nav.Link>
                             <Nav.Link as={Link} to="/productos/libros">Libros</Nav.Link>
-                            <Nav.Link as={Link} to="/carrito"><IoCartOutline /></Nav.Link>
+                            <Nav.Link as={Link} to="/carrito/protected/comprar"><IoCartOutline /></Nav.Link>
                             <NavDropdown
                                 title={<img src={`${serverUrl}/${user?.avatar}`} className="avatar" />}
                                 id="basic-nav-dropdown"

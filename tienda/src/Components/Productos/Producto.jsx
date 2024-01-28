@@ -10,7 +10,7 @@ function Producto({ isAuthenticated, addToCart, user }) {
     const [product, setProduct] = useState(null);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState("");
-    const [name, setName] = useState("");
+    const [userName, setUserName] = useState("");
     const [showToast, setShowToast] = useState(false);
     const [showToastComentario, setShowToastComentario] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
@@ -24,16 +24,20 @@ function Producto({ isAuthenticated, addToCart, user }) {
     useEffect(() => {
         const fetchProducto = async () => {
             try {
-                const res = await axios.get(`http://localhost:8800/productos/detalle/${id}`);
+                const res = await axios.get(`${serverUrl}/productos/detalle/${id}`);
                 setProduct(res.data);
-                const comentariosRes = await axios.get(`http://localhost:8800/productos/comentarios/${id}`);
+                if(isAuthenticated && user && user._id) {
+                    const userRes = await axios.get(`${serverUrl}/usuarios/detalle/${user._id}`);
+                    setUserName(userRes.data.name);
+                }
+                const comentariosRes = await axios.get(`${serverUrl}/productos/comentarios/${id}`);
                 setComments(comentariosRes.data);
             } catch (err) {
                 console.log(err);
             }
         };
         fetchProducto();
-    }, [id]);
+    }, [id, isAuthenticated, user]);
 
     const item = product;
 
@@ -63,16 +67,25 @@ function Producto({ isAuthenticated, addToCart, user }) {
                     text: newComment,
                     userId: userId,
                     productId: id,
-                    name: name,
+                    name: userName,
                 };
-                await axios.post(`http://localhost:8800/comentarios/protected/agregar`, comentarioData);
+    
+                const response = await axios.post(`${serverUrl}/comentarios/protected/agregar`, comentarioData, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
 
-                const comentariosRes = await axios.get(`http://localhost:8800/comentarios/${id}`);
-                setComments(comentariosRes.data);
-                setNewComment("");
-                setShowToastComentario(true);
+                if (response.status === 201) {
+                    const comentariosRes = await axios.get(`${serverUrl}/productos/comentarios/${id}`);
+                    setComments(comentariosRes.data);
+                    setNewComment("");
+                    setShowToastComentario(true);
+                } else {
+                    console.error('Error al agregar el comentario:', response.data);
+                }
             } catch (err) {
-                console.log(err);
+                console.error('Error al agregar el comentario:', err);
             }
         } else {
             alert("Debes iniciar sesión o registrarte para comentar.");
@@ -158,8 +171,9 @@ function Producto({ isAuthenticated, addToCart, user }) {
                                 <Form.Control
                                     type="text"
                                     placeholder="Ingresa tu nombre"
-                                    value={name}
+                                    value={userName}
                                     onChange={handleNombreChange}
+                                    disabled
                                 />
                             </Form.Group>
                             <Form.Group controlId="nuevoComentario">

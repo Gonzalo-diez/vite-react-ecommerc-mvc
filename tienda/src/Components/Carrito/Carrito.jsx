@@ -3,21 +3,23 @@ import axios from 'axios';
 import { Button, Form, Toast, ToastContainer } from 'react-bootstrap';
 import '../css/App.css';
 
-const Carrito = ({ carrito, removeFromCart }) => {
+const Carrito = ({ cart, removeFromCart, isAuthenticated, user }) => {
   const [showCompraForm, setShowCompraForm] = useState(false);
-  const [pais, setPais] = useState('');
-  const [provincia, setProvincia] = useState('');
-  const [localidad, setLocalidad] = useState('');
-  const [calle, setCalle] = useState('');
-  const [telefono, setTelefono] = useState('');
-  const [numeroTarjeta, setNumeroTarjeta] = useState('');
-  const [numeroSeguridad, setNumeroSeguridad] = useState('');
+  const [country, setCountry] = useState('');
+  const [state, setState] = useState('');
+  const [city, setCity] = useState('');
+  const [street, setStreet] = useState('');
+  const [phone, setPhone] = useState('');
+  const [cardBank, setCardBank] = useState('');
+  const [securityNumber, setSecurityNumber] = useState('');
+  const [userEmail, setUserEmail] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [showEmptyCartToast, setShowEmptyCartToast] = useState(false);
 
+  const token = localStorage.getItem("jwtToken");
 
   const handleCompra = async () => {
-    if (carrito.length === 0) {
+    if (cart.length === 0) {
       setShowEmptyCartToast(true);
       return;
     }
@@ -28,18 +30,30 @@ const Carrito = ({ carrito, removeFromCart }) => {
     }
 
     try {
-      for (const producto of carrito) {
+      for (const producto of cart) {
         const productId = producto._id;
 
-        const response = await axios.post("http://localhost:8800/comprar", {
+        let userEmailToUpdate = userEmail;
+
+        if (isAuthenticated && user && user._id) {
+          const userRes = await axios.get(`http://localhost:8800/usuarios/detalle/${user._id}`);
+          userEmailToUpdate = userRes.data.email;
+        }
+
+        const response = await axios.post("http://localhost:8800/carrito/protected/comprar", {
           productId,
-          pais,
-          provincia,
-          localidad,
-          calle,
-          telefono,
-          numero_tarjeta: numeroTarjeta,
-          numero_seguridad: numeroSeguridad,
+          country,
+          state,
+          city,
+          street,
+          phone,
+          cardBank,
+          securityNumber,
+          email: userEmailToUpdate,
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         console.log(response.data);
         removeFromCart(productId);
@@ -47,13 +61,14 @@ const Carrito = ({ carrito, removeFromCart }) => {
       }
 
       setShowCompraForm(false);
-      setPais('');
-      setProvincia('');
-      setLocalidad('');
-      setCalle('');
-      setTelefono('');
-      setNumeroTarjeta('');
-      setNumeroSeguridad('');
+      setCountry('');
+      setState('');
+      setCity('');
+      setStreet('');
+      setPhone('');
+      setCardBank('');
+      setSecurityNumber('');
+      setUserEmail('');
     } catch (error) {
       console.error("Error al comprar:", error);
     }
@@ -64,9 +79,9 @@ const Carrito = ({ carrito, removeFromCart }) => {
       <div className="carrito">
         <h2>Carrito de Compras</h2>
         <ul>
-          {carrito.map((producto) => (
+          {cart.map((producto) => (
             <li key={producto._id}>
-              {producto.nombre} - ${producto.precio}
+              {producto.title} - ${producto.price}
               <Button variant="danger" onClick={() => removeFromCart(producto._id)} className="btn-eliminar">Quitar</Button>
             </li>
           ))}
@@ -80,8 +95,8 @@ const Carrito = ({ carrito, removeFromCart }) => {
                 <Form.Control
                   type="text"
                   name="pais"
-                  value={pais}
-                  onChange={(e) => setPais(e.target.value)}
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
                   required
                 />
               </Form.Group>
@@ -90,8 +105,8 @@ const Carrito = ({ carrito, removeFromCart }) => {
                 <Form.Control
                   type="text"
                   name="provincia"
-                  value={provincia}
-                  onChange={(e) => setProvincia(e.target.value)}
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
                   required
                 />
               </Form.Group>
@@ -100,8 +115,8 @@ const Carrito = ({ carrito, removeFromCart }) => {
                 <Form.Control
                   type="text"
                   name="localidad"
-                  value={localidad}
-                  onChange={(e) => setLocalidad(e.target.value)}
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
                   required
                 />
               </Form.Group>
@@ -110,8 +125,8 @@ const Carrito = ({ carrito, removeFromCart }) => {
                 <Form.Control
                   type="text"
                   name="calle"
-                  value={calle}
-                  onChange={(e) => setCalle(e.target.value)}
+                  value={street}
+                  onChange={(e) => setStreet(e.target.value)}
                   required
                 />
               </Form.Group>
@@ -120,8 +135,8 @@ const Carrito = ({ carrito, removeFromCart }) => {
                 <Form.Control
                   type="number"
                   name="telefono"
-                  value={telefono}
-                  onChange={(e) => setTelefono(e.target.value)}
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                   required
                 />
               </Form.Group>
@@ -130,8 +145,8 @@ const Carrito = ({ carrito, removeFromCart }) => {
                 <Form.Control
                   type="number"
                   name="numeroTarjeta"
-                  value={numeroTarjeta}
-                  onChange={(e) => setNumeroTarjeta(e.target.value)}
+                  value={cardBank}
+                  onChange={(e) => setCardBank(e.target.value)}
                   required
                 />
               </Form.Group>
@@ -140,9 +155,20 @@ const Carrito = ({ carrito, removeFromCart }) => {
                 <Form.Control
                   type="number"
                   name="numeroSeguridad"
-                  value={numeroSeguridad}
-                  onChange={(e) => setNumeroSeguridad(e.target.value)}
+                  value={securityNumber}
+                  onChange={(e) => setSecurityNumber(e.target.value)}
                   required
+                />
+              </Form.Group>
+              <Form.Group controlId="userEmail">
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="userEmail"
+                  value={userEmail || (isAuthenticated && user && user._id && user.email) || ''}
+                  onChange={(e) => setUserEmail(e.target.value)}
+                  required
+                  disabled
                 />
               </Form.Group>
               <Button variant="primary" onClick={handleCompra} className="btn-comprar">Realizar Compra</Button>

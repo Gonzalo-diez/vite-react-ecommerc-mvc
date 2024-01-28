@@ -1,10 +1,10 @@
 const Product = require("../models/product");
 const Shop = require("../models/shop");
+const User = require("../models/user");
 
 const ShopController = {
     purchase: async (req, res) => {
         const { productId, country, state, city, street, phone, card_bank, security_number } = req.body;
-        const userId = req.user._id;
 
         try {
             const product = await Product.findById(productId);
@@ -17,11 +17,17 @@ const ShopController = {
                 return res.status(400).json({ error: "Producto agotado" });
             }
 
+            const user = await User.findOne({ email: req.body.email });
+
+            if (!user) {
+                return res.status(404).json({ error: "Usuario no encontrado" });
+            }
+
             product.stock -= 1;
             await product.save();
 
             const shop = new Shop({
-                user: userId,
+                user: user._id, 
                 Products: [{ Product: productId, stock: 1 }],
                 country,
                 state,
@@ -35,12 +41,6 @@ const ShopController = {
 
             await shop.save();
 
-            req.app.io.emit("purchase", {
-                message: "Nueva compra realizada",
-                product: product,
-                shop: shop,
-            });
-
             return res.json({ message: "Compra exitosa, stock actualizado", Product: product });
         } catch (err) {
             return res.status(500).json({ error: "Error en la base de datos", details: err.message });
@@ -51,7 +51,7 @@ const ShopController = {
         const userId = req.user._id;
 
         try {
-            const shops = await Shop.find({ usuario: userId }).populate('Products.Product').exec();
+            const shops = await Shop.find({ user: userId }).populate('Products.Product').exec();
             return res.json(shops);
         } catch (err) {
             return res.status(500).json({ error: "Error en la base de datos", details: err.message });

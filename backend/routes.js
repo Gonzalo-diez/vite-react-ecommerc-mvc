@@ -9,6 +9,6 @@ const ShopRoutes = require("./routes/shopRoutes");
 router.use("/usuarios", UserRoutes);
 router.use("/productos", ProductRoutes);
 router.use("/comentarios", CommentRoutes);
-router.use("/compras", ShopRoutes);
+router.use("/carrito", ShopRoutes);
 
 module.exports = router;

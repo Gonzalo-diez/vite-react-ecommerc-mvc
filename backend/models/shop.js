@@ -6,23 +6,19 @@ const shopSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
-    products: [
-        {
-            product: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Product',
-            },
-            stock: Number,
-        },
-    ],
+    product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+    },
+    stock: Number,
     total: Number,
     country: String,
     state: String,
     city: String,
     street: String,
     phone: Number,
-    card_bank: Number,
-    security_number: Number,
+    cardBank: Number,
+    securityNumber: Number,
     fecha: {
         type: Date,
         default: Date.now,
