@@ -77,6 +77,7 @@ function User({ isAuthenticated, user, setUser }) {
         });
         if (soldRes.data) {
           setSold(soldRes.data);
+          console.log(soldRes.data);
         } else {
           console.error("La respuesta del servidor no tiene la estructura esperada:", soldRes.data);
         }
@@ -148,7 +149,7 @@ function User({ isAuthenticated, user, setUser }) {
               <ul>
                 {bought.boughtProducts.map((boughtProd) => (
                   <li key={boughtProd._id}>
-                    <strong>Título:</strong> {boughtProd.product}, <strong>Cantidad:</strong> {boughtProd.quantity}, <strong>Precio Total:</strong> {boughtProd.price}
+                    <strong>Título:</strong> {boughtProd.title}, <strong>Cantidad:</strong> {boughtProd.quantity}, <strong>Precio Total:</strong> {boughtProd.price}
                     <Button onClick={() => navigate(`/productos/detalle/${boughtProd._id}`)}>Detalles</Button>
                   </li>
                 ))}
@@ -164,7 +165,7 @@ function User({ isAuthenticated, user, setUser }) {
               <ul>
                 {sold.soldProducts.map((soldProd) => (
                   <li key={soldProd._id}>
-                    <strong>Título:</strong> {soldProd.product}, <strong>Cantidad:</strong> {soldProd.quantity}, <strong>Precio Total:</strong> {soldProd.price}
+                    <strong>Título:</strong> {soldProd.title}, <strong>Cantidad:</strong> {soldProd.quantity}, <strong>Precio Total:</strong> {soldProd.price}
                     <Button onClick={() => navigate(`/productos/detalle/${soldProd._id}`)}>Detalles</Button>
                   </li>
                 ))}

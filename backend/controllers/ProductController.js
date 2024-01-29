@@ -97,6 +97,7 @@ const ProductController = {
             const soldProduct = new SoldProduct({
                 user: userId,
                 product: productId,
+                title,
                 quantity: 1,
                 price,
                 status: status,

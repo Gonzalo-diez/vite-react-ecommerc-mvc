@@ -46,6 +46,7 @@ const CartController = {
             const boughtProduct = new BoughtProduct({
                 user: userId,
                 product: productId,
+                title: product.title,
                 quantity: 1,
                 price: product.price,
             });

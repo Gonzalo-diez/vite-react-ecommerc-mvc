@@ -28,6 +28,6 @@ userRoutes.get("/protected/:id", passport.authenticate('jwt', { session: false }
 userRoutes.get("/protected/productosCreados/:id", passport.authenticate('jwt', { session: false }), UserController.getUserProducts);
 userRoutes.get("/protected/productosComprados/:id", passport.authenticate('jwt', { session: false }), UserController.getUserBoughtProducts);
 userRoutes.get("/protected/productosVendidos/:id", passport.authenticate('jwt', { session: false }), UserController.getUserSoldProducts);
-userRoutes.get("/protected/logout", passport.authenticate('jwt', { session: false }), UserController.logout);
+userRoutes.get("/protected/logout/:id", passport.authenticate('jwt', { session: false }), UserController.logout);
 
 module.exports = userRoutes;

@@ -24,7 +24,7 @@ function Menu({ isAuthenticated, user }) {
                 return;
             }
     
-            await axios.get(`${serverUrl}/usuarios/protected/logout`, {
+            await axios.get(`${serverUrl}/usuarios/protected/logout/$${userId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
