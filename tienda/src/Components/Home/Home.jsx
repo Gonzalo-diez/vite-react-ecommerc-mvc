@@ -4,12 +4,12 @@ import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { IoPencil, IoTrash } from "react-icons/io5";
 import axios from "axios";
 import "../css/App.css";
+import { useAuth } from "../context/AuthContext";
 
-function Home({isAuthenticated}) {
+function Home({ isAuthenticated }) {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
-
-  const token = localStorage.getItem("jwtToken");
+  const { userId } = useAuth();
 
   useEffect(() => {
     const fetchProductos = async () => {
@@ -49,7 +49,7 @@ function Home({isAuthenticated}) {
             </Col>
           </Row>
           <Row>
-            {isAuthenticated && token ? (
+            {isAuthenticated ? (
               <Button variant="primary" onClick={handleAgregarProducto} >Agregar producto</Button>
             ) : (
               <Col>
@@ -85,7 +85,7 @@ function Home({isAuthenticated}) {
                   <Card.Text>Cantidad: {product.stock}</Card.Text>
                   <div className="d-flex justify-content-between">
                     <Button variant="primary" onClick={() => navigate(`/productos/detalle/${product._id}`)}>Ver más</Button>
-                    {isAuthenticated && token && (
+                    {isAuthenticated && userId && userId === product.user._id && (
                       <div className="inicio-link-container">
                         <Button variant="warning" onClick={() => navigate(`/productos/protected/editar/${product._id}`)}><IoPencil /></Button>
                         <Button variant="danger" onClick={() => handleEliminarProducto(product._id)}><IoTrash /></Button>

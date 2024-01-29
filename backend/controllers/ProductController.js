@@ -7,7 +7,10 @@ const SoldProduct = require("../models/soldProduct");
 const ProductController = {
     getAllproduct: async (req, res, next) => {
         try {
-            const product = await Product.find({});
+            const product = await Product.find({}).populate({
+                path: 'user',
+                model: 'User',
+            });
             return res.json(product);
         } catch (err) {
             console.error('Error:', err);
@@ -126,6 +129,16 @@ const ProductController = {
             
             if (!user) {
                 return res.status(404).json({ error: 'Producto no encontrado' });
+            }
+
+            const product = await Product.findById(productId).exec();
+
+            if (!product) {
+                return res.status(404).json({ error: "Producto no encontrado" });
+            }
+
+            if (product.user.toString() !== userId) {
+                return res.status(403).json({ error: "No tienes permisos para editar este producto" });
             }
 
             const imageName = req.file ? req.file.filename : null;
