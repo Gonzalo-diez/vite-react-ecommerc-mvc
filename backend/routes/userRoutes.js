@@ -1,5 +1,4 @@
 const express = require("express");
-const path = require("path");
 const multer = require("multer");
 const UserController = require("../controllers/UserController");
 const passport = require("../config/passport-jwt-middleware");
@@ -27,6 +26,8 @@ userRoutes.put("/protected/cambiarContrasena/:userId", passport.authenticate('jw
 userRoutes.get("/detalle/:id", UserController.getUserDetail);
 userRoutes.get("/protected/:id", passport.authenticate('jwt', { session: false }), UserController.getUserById);
 userRoutes.get("/protected/productosCreados/:id", passport.authenticate('jwt', { session: false }), UserController.getUserProducts);
+userRoutes.get("/protected/productosComprados/:id", passport.authenticate('jwt', { session: false }), UserController.getUserBoughtProducts);
+userRoutes.get("/protected/productosVendidos/:id", passport.authenticate('jwt', { session: false }), UserController.getUserSoldProducts);
 userRoutes.get("/protected/logout", passport.authenticate('jwt', { session: false }), UserController.logout);
 
 module.exports = userRoutes;

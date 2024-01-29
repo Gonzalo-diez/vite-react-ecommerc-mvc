@@ -3,7 +3,10 @@ const jwt = require('jsonwebtoken');
 const config = require("../config/config");
 const passport = require("passport");
 const User = require("../models/user");
-const Product = require("../models/product")
+const Product = require("../models/product");
+const Cart = require("../models/cart");
+const BoughtProduct = require("../models/boughtProduct");
+const SoldProduct = require("../models/soldProduct");
 
 
 const UserController = {
@@ -31,7 +34,7 @@ const UserController = {
 
             return res.json({
                 message: "Usuario registrado!",
-                usuario: {
+                user: {
                     _id: newUser._id,
                     name: newUser.name,
                     surname: newUser.surname,
@@ -109,16 +112,16 @@ const UserController = {
 
     getUserProducts: async (req, res) => {
         const userId = req.params.id;
-    
+
         try {
             const user = await User.findById(userId).exec();
-    
+
             if (!user) {
                 return res.status(404).json({ error: "Usuario no encontrado" });
             }
-    
+
             const userProducts = await Product.find({ user: userId }).exec();
-    
+
             return res.json({
                 user: {
                     _id: user._id,
@@ -133,7 +136,63 @@ const UserController = {
             console.error("Error al obtener los productos del usuario:", err);
             return res.status(500).json({ error: "Error en la base de datos", details: err.message });
         }
-    },    
+    },
+
+    getUserBoughtProducts: async (req, res) => {
+        const userId = req.params.id;
+
+        try {
+            const user = await User.findById(userId).exec();
+
+            if (!user) {
+                return res.status(404).json({ error: "Usuario no encontrado" });
+            }
+
+            const userBoughtProducts = await BoughtProduct.find({ user: userId }).exec();
+
+            return res.json({
+                user: {
+                    _id: user._id,
+                    name: user.name,
+                    surname: user.surname,
+                    email: user.email,
+                    avatar: user.avatar,
+                },
+                boughtProducts: userBoughtProducts,
+            });
+        } catch (err) {
+            console.error("Error al obtener los productos del usuario:", err);
+            return res.status(500).json({ error: "Error en la base de datos", details: err.message });
+        }
+    },
+
+    getUserSoldProducts: async (req, res) => {
+        const userId = req.params.id;
+
+        try {
+            const user = await User.findById(userId).exec();
+
+            if (!user) {
+                return res.status(404).json({ error: "Usuario no encontrado" });
+            }
+
+            const userSoldProducts = await SoldProduct.find({ user: userId }).exec();
+
+            return res.json({
+                user: {
+                    _id: user._id,
+                    name: user.name,
+                    surname: user.surname,
+                    email: user.email,
+                    avatar: user.avatar,
+                },
+                soldProducts: userSoldProducts,
+            });
+        } catch (err) {
+            console.error("Error al obtener los productos del usuario:", err);
+            return res.status(500).json({ error: "Error en la base de datos", details: err.message });
+        }
+    },
 
     editUserProfile: async (req, res) => {
         const userId = req.params.userId;
@@ -195,7 +254,7 @@ const UserController = {
                     console.error('Error al cerrar sesión:', err);
                     return res.status(500).json({ error: 'Error al cerrar sesión' });
                 }
-        
+
                 res.json({ message: 'Sesión cerrada exitosamente' });
             });
         } catch (error) {

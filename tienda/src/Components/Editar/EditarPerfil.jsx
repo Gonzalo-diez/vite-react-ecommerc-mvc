@@ -49,6 +49,7 @@ const EditarPerfil = () => {
             const response = await axios.put(`http://localhost:8800/usuarios/protected/editarPerfil/${userId}`, formData,
             {
                 headers: {
+                    "Content-Type": "multipart/form-data",
                     Authorization: `Bearer ${token}`, 
                 },
             });

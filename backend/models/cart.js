@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 // Define el modelo de compra en Mongoose
-const shopSchema = new mongoose.Schema({
+const cartSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -19,12 +19,12 @@ const shopSchema = new mongoose.Schema({
     phone: Number,
     cardBank: Number,
     securityNumber: Number,
-    fecha: {
+    date: {
         type: Date,
         default: Date.now,
     },
 });
 
-const Shop = mongoose.model('Shop', shopSchema);
+const Cart = mongoose.model('Cart', cartSchema);
 
-module.exports = Shop;
+module.exports = Cart;

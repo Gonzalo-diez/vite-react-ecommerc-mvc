@@ -1,10 +1,12 @@
 const Product = require("../models/product");
-const Shop = require("../models/shop");
+const Cart = require("../models/cart");
 const User = require("../models/user");
+const BoughtProduct = require("../models/boughtProduct");
+const SoldProduct = require("../models/soldProduct");
 
-const ShopController = {
+const CartController = {
     purchase: async (req, res) => {
-        const { productId, country, state, city, street, phone, card_bank, security_number } = req.body;
+        const { productId, country, state, city, street, phone, card_bank, security_number, userId } = req.body;
 
         try {
             const product = await Product.findById(productId);
@@ -17,7 +19,7 @@ const ShopController = {
                 return res.status(400).json({ error: "Producto agotado" });
             }
 
-            const user = await User.findOne({ email: req.body.email });
+            const user = await User.findById(userId).exec();
 
             if (!user) {
                 return res.status(404).json({ error: "Usuario no encontrado" });
@@ -26,8 +28,8 @@ const ShopController = {
             product.stock -= 1;
             await product.save();
 
-            const shop = new Shop({
-                user: user._id, 
+            const cart = new Cart({
+                user: userId, 
                 Products: [{ Product: productId, stock: 1 }],
                 country,
                 state,
@@ -39,24 +41,29 @@ const ShopController = {
                 total: product.price,
             });
 
-            await shop.save();
+            await cart.save();
+
+            const boughtProduct = new BoughtProduct({
+                user: userId,
+                product: productId,
+                quantity: 1,
+                price: product.price,
+            });
+
+            await boughtProduct.save();
+
+            const soldProduct = await SoldProduct.findOne({ user: userId, product: productId }).exec();
+
+            if (soldProduct) {
+                soldProduct.status = "vendido";
+                await soldProduct.save();
+            }
 
             return res.json({ message: "Compra exitosa, stock actualizado", Product: product });
         } catch (err) {
             return res.status(500).json({ error: "Error en la base de datos", details: err.message });
         }
     },
-
-    obtainPurchaseByUser: async (req, res) => {
-        const userId = req.user._id;
-
-        try {
-            const shops = await Shop.find({ user: userId }).populate('Products.Product').exec();
-            return res.json(shops);
-        } catch (err) {
-            return res.status(500).json({ error: "Error en la base de datos", details: err.message });
-        }
-    },
 };
 
-module.exports = ShopController;
+module.exports = CartController;

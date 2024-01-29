@@ -8,6 +8,8 @@ function User({ isAuthenticated, user, setUser }) {
   const { userId } = useAuth();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
+  const [bought, setBought] = useState(null);
+  const [sold, setSold] = useState(null);
 
   const serverUrl = "http://localhost:8800";
   const token = localStorage.getItem("jwtToken");
@@ -48,8 +50,46 @@ function User({ isAuthenticated, user, setUser }) {
       }
     }
 
+    const fetchBoughtProduct = async () => {
+      try {
+        const boughtRes = await axios.get(`${serverUrl}/usuarios/protected/productosComprados/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
+        if (boughtRes.data) {
+          setBought(boughtRes.data);
+        } else {
+          console.error("La respuesta del servidor no tiene la estructura esperada:", boughtRes.data);
+        }
+      }
+      catch {
+        console.log("Error al encontrar los productos comprados:", err);
+      }
+    }
+
+    const fetchSoldProduct = async () => {
+      try {
+        const soldRes = await axios.get(`${serverUrl}/usuarios/protected/productosVendidos/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
+        if (soldRes.data) {
+          setSold(soldRes.data);
+        } else {
+          console.error("La respuesta del servidor no tiene la estructura esperada:", soldRes.data);
+        }
+      }
+      catch {
+        console.log("Error al encontrar los productos vendidos:", err);
+      }
+    }
+
     fetchUser();
-    fetchCreatedProduct();  // Agregado: Llamar a la función que obtiene los productos creados
+    fetchCreatedProduct();
+    fetchBoughtProduct();
+    fetchSoldProduct();
   }, [userId]);
 
   const handleCambiarPassword = () => {
@@ -99,6 +139,38 @@ function User({ isAuthenticated, user, setUser }) {
               </ul>
             ) : (
               <p>No has creado productos aún.</p>
+            )}
+          </div>
+
+          <div>
+            <h3>Productos Comprados:</h3>
+            {bought && bought.boughtProducts && bought.boughtProducts.length > 0 ? (
+              <ul>
+                {bought.boughtProducts.map((boughtProd) => (
+                  <li key={boughtProd._id}>
+                    <strong>Título:</strong> {boughtProd.product}, <strong>Cantidad:</strong> {boughtProd.quantity}, <strong>Precio Total:</strong> {boughtProd.price}
+                    <Button onClick={() => navigate(`/productos/detalle/${boughtProd._id}`)}>Detalles</Button>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No has comprado productos aún.</p>
+            )}
+          </div>
+
+          <div>
+            <h3>Productos Vendidos:</h3>
+            {sold && sold.soldProducts && sold.soldProducts.length > 0 ? (
+              <ul>
+                {sold.soldProducts.map((soldProd) => (
+                  <li key={soldProd._id}>
+                    <strong>Título:</strong> {soldProd.product}, <strong>Cantidad:</strong> {soldProd.quantity}, <strong>Precio Total:</strong> {soldProd.price}
+                    <Button onClick={() => navigate(`/productos/detalle/${soldProd._id}`)}>Detalles</Button>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No has vendido productos aún.</p>
             )}
           </div>
         </div>

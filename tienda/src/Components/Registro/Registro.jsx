@@ -32,17 +32,10 @@ const Registro = ({ setIsAuthenticated, setUser }) => {
         const token = res.data.token;
         
         localStorage.setItem("jwtToken", token);
-
+        setUser(res.data.user);
+        setAuthenticatedUserId(res.data.user._id);
         setIsAuthenticated(true);
-        const userData = res.data.user;
-        if (userData) {
-          setUser(userData);
-          const userId = userData._id;
-          setAuthenticatedUserId(userId);
-          navigate(`/usuarios/protected/${userId}`);
-        } else {
-          console.log("User data is missing in the response.")
-        }
+        navigate(`/usuarios/protected/${res.data.user._id}`);
       }
     } catch (err) {
       console.log(err);

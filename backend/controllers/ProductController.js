@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Comment = require("../models/comment")
 const Product = require("../models/product");
 const User = require("../models/user");
+const SoldProduct = require("../models/soldProduct");
 
 const ProductController = {
     getAllproduct: async (req, res, next) => {
@@ -49,9 +50,7 @@ const ProductController = {
         const productId = req.params.id;
     
         try {
-            console.log('Obteniendo comentarios para el producto con ID:', productId);
             const comments = await Comment.find({ product: productId }).exec();
-            console.log('Comentarios obtenidos:', comments);
             return res.json(comments);
         } catch (err) {
             console.error('Error:', err);
@@ -87,10 +86,24 @@ const ProductController = {
                 user: userId,
             });
 
-            await newProduct.save();
+            const savedProduct = await newProduct.save();
 
-            user.createdProducts.push(newProduct);
+            user.createdProducts.push(savedProduct);
             await user.save();
+
+            const productId = savedProduct._id;
+            const status = "Activo";
+
+            const soldProduct = new SoldProduct({
+                user: userId,
+                product: productId,
+                quantity: 1,
+                price,
+                status: status,
+            });
+
+            await soldProduct.save();
+
 
             return res.json({
                 message: "Producto creado!!!",

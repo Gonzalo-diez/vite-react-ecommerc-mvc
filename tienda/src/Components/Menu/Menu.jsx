@@ -55,7 +55,7 @@ function Menu({ isAuthenticated, user }) {
                                 title={<img src={`${serverUrl}/${user?.avatar}`} className="avatar" />}
                                 id="basic-nav-dropdown"
                             >
-                                <NavDropdown.Item as={Link} to={`/usuarios/${userId}`}>Perfil</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to={`/usuarios/protected/${userId}`}>Perfil</NavDropdown.Item>
                                 <NavDropdown.Item as={Link} to={`/usuarios/protected/editarPerfil/${userId}`}>Ajustes</NavDropdown.Item>
                                 <NavDropdown.Item onClick={handleLogOut}>Cerrar Sesión</NavDropdown.Item>
                             </NavDropdown>

@@ -1,6 +1,5 @@
 const express = require("express");
 const multer = require("multer");
-const path = require("path");
 const ProductController = require("../controllers/ProductController");
 const passport = require("../config/passport-jwt-middleware");
 

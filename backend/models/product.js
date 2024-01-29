@@ -17,7 +17,7 @@ const productSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment'
     },
-    shops: {
+    carts: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Shop'
     },

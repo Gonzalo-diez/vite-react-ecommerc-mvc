@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Button, Form, Toast, ToastContainer } from 'react-bootstrap';
 import '../css/App.css';
+import { useAuth } from '../Context/AuthContext';
 
 const Carrito = ({ cart, removeFromCart, isAuthenticated, user }) => {
   const [showCompraForm, setShowCompraForm] = useState(false);
@@ -12,7 +13,7 @@ const Carrito = ({ cart, removeFromCart, isAuthenticated, user }) => {
   const [phone, setPhone] = useState('');
   const [cardBank, setCardBank] = useState('');
   const [securityNumber, setSecurityNumber] = useState('');
-  const [userEmail, setUserEmail] = useState('');
+  const { userId } = useAuth();
   const [showToast, setShowToast] = useState(false);
   const [showEmptyCartToast, setShowEmptyCartToast] = useState(false);
 
@@ -33,13 +34,6 @@ const Carrito = ({ cart, removeFromCart, isAuthenticated, user }) => {
       for (const producto of cart) {
         const productId = producto._id;
 
-        let userEmailToUpdate = userEmail;
-
-        if (isAuthenticated && user && user._id) {
-          const userRes = await axios.get(`http://localhost:8800/usuarios/detalle/${user._id}`);
-          userEmailToUpdate = userRes.data.email;
-        }
-
         const response = await axios.post("http://localhost:8800/carrito/protected/comprar", {
           productId,
           country,
@@ -49,7 +43,7 @@ const Carrito = ({ cart, removeFromCart, isAuthenticated, user }) => {
           phone,
           cardBank,
           securityNumber,
-          email: userEmailToUpdate,
+          userId,
         }, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -68,7 +62,6 @@ const Carrito = ({ cart, removeFromCart, isAuthenticated, user }) => {
       setPhone('');
       setCardBank('');
       setSecurityNumber('');
-      setUserEmail('');
     } catch (error) {
       console.error("Error al comprar:", error);
     }
@@ -158,17 +151,6 @@ const Carrito = ({ cart, removeFromCart, isAuthenticated, user }) => {
                   value={securityNumber}
                   onChange={(e) => setSecurityNumber(e.target.value)}
                   required
-                />
-              </Form.Group>
-              <Form.Group controlId="userEmail">
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="userEmail"
-                  value={userEmail || (isAuthenticated && user && user._id && user.email) || ''}
-                  onChange={(e) => setUserEmail(e.target.value)}
-                  required
-                  disabled
                 />
               </Form.Group>
               <Button variant="primary" onClick={handleCompra} className="btn-comprar">Realizar Compra</Button>
