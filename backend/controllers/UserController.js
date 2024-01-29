@@ -195,26 +195,30 @@ const UserController = {
     },
 
     editUserProfile: async (req, res) => {
-        const userId = req.params.userId;
+        const userId = req.params.id;
         const { name, surname, email } = req.body;
-
+    
+        console.log('Usuario ID recibido:', userId);
+    
         try {
             const imageName = req.file ? req.file.filename : null;
-
+    
             if (!imageName) {
                 return res.status(400).json({ error: 'No se proporcionó una imagen válida' });
             }
-
+    
             const updatedUser = await User.findByIdAndUpdate(
                 userId,
                 { name, surname, email, avatar: imageName },
                 { new: true }
             );
-
+    
+            console.log('Usuario actualizado:', updatedUser);
+    
             if (!updatedUser) {
                 return res.status(404).json({ error: "Usuario no encontrado" });
             }
-
+    
             return res.json("Perfil de usuario actualizado!");
         } catch (err) {
             console.error("Error en la actualización del perfil:", err);

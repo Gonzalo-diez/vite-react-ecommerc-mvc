@@ -59,6 +59,7 @@ function User({ isAuthenticated, user, setUser }) {
         });
         if (boughtRes.data) {
           setBought(boughtRes.data);
+          console.log(boughtRes.data);
         } else {
           console.error("La respuesta del servidor no tiene la estructura esperada:", boughtRes.data);
         }

@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import axios from "axios";
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const EditarPerfil = () => {
     const { userId } = useAuth();
+    const navigate = useNavigate();
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
     const [email, setEmail] = useState('');
@@ -34,8 +36,6 @@ const EditarPerfil = () => {
         fetchPerfil();
     }, [userId]);
 
-
-
     const handleGuardarCambios = async () => {
         try {
             const token = localStorage.getItem("jwtToken");
@@ -43,7 +43,7 @@ const EditarPerfil = () => {
             const formData = new FormData();
             formData.append("name", name);
             formData.append("surname", surname);
-            formData.append("email", email);
+            formData.append("email", email);  // Corregido aquí
             formData.append("avatar", avatar);
 
             const response = await axios.put(`http://localhost:8800/usuarios/protected/editarPerfil/${userId}`, formData,
@@ -55,14 +55,15 @@ const EditarPerfil = () => {
             });
 
             console.log('Respuesta del servidor:', response.data);
+            navigate(`/usuarios/protected/${userId}`)
 
         } catch (error) {
-            console.error('Error al guardar cambios:', error.response || error.message);
+            console.error('Error al guardar cambios:', error);
         }
     };
 
     const handleEditAvatar = (e) => {
-        setAvatar(e.target.files[0])
+        setAvatar(e.target.files[0]);
     }
 
     return (
@@ -91,12 +92,15 @@ const EditarPerfil = () => {
                             />
                         </Form.Group>
 
-                        <Form.Control
-                            type="email"
-                            placeholder="Ingresa tu correo electrónico"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
+                        <Form.Group className="mb-3" controlId="formEmail">  {/* Corregido aquí */}
+                            <Form.Label>Correo Electrónico</Form.Label>
+                            <Form.Control
+                                type="email"
+                                placeholder="Ingresa tu correo electrónico"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </Form.Group>
 
                         <Form.Control
                             type="file"

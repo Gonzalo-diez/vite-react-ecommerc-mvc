@@ -3,30 +3,30 @@ const Product = require("../models/product");
 
 const CommentController = {
     addComment: async (req, res) => {
-        const { text, userId, productId, name } = req.body; 
-
+        const { text, userId, productId, name } = req.body;
+    
         try {
-            const product = await Product.findById(userId).exec();
-            
+            const product = await Product.findById(productId).exec();
+    
             if (!product) {
                 return res.status(404).json({ error: 'Producto no encontrado' });
             }
-
+    
             const newComment = new Comment({
                 text,
                 user: userId,
                 product: productId,
                 name,
             });
-
+    
             await newComment.save();
-
+    
             return res.json('Comentario agregado');
         } catch (err) {
             console.error('Error al guardar el comentario:', err);
             return res.status(500).json({ error: 'Error en la base de datos', details: err.message });
         }
-    },
+    },    
 
     editComment: async (req, res) => {
         const commentId = req.params.CommentId;
