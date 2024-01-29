@@ -3,9 +3,11 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import "../css/App.css";
+import { useAuth } from "../context/AuthContext";
 
 function EditarProducto({ isAuthenticated }) {
     const { id } = useParams();
+    const { userId } = useAuth();
     const navigate = useNavigate();
     const [title, setTitle] = useState("");
     const [brand, setBrand] = useState("");
@@ -57,16 +59,7 @@ function EditarProducto({ isAuthenticated }) {
             formData.append("stock", stock);
             formData.append("category", category);
             formData.append("image", image);
-            
-            console.log("Datos a enviar:", {
-                title,
-                brand,
-                description,
-                price,
-                stock,
-                category,
-                image,
-            });
+            formData.append("userId", userId);
 
             const response = await axios.put(`http://localhost:8800/productos/protected/editar/${id}`, formData, {
                 headers: {

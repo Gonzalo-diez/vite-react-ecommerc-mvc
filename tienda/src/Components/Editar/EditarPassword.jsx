@@ -22,7 +22,7 @@ const EditarPassword = () => {
             });
 
             console.log('Respuesta del servidor:', response.data);
-            navigate(`/usuarios/${userId}`)
+            navigate(`/usuarios/protected/${userId}`)
 
         } catch (error) {
             console.error('Error al guardar cambios de contraseña:', error.message);

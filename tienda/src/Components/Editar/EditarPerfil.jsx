@@ -43,7 +43,7 @@ const EditarPerfil = () => {
             const formData = new FormData();
             formData.append("name", name);
             formData.append("surname", surname);
-            formData.append("email", email);  // Corregido aquí
+            formData.append("email", email); 
             formData.append("avatar", avatar);
 
             const response = await axios.put(`http://localhost:8800/usuarios/protected/editarPerfil/${userId}`, formData,
