@@ -1,5 +1,7 @@
 const Comment = require("../models/comment");
 const Product = require("../models/product");
+const User = require("../models/user");
+const BoughtProduct = require("../models/boughtProduct");
 
 const CommentController = {
     getRatings: async (req, res, next) => {
@@ -18,12 +20,25 @@ const CommentController = {
         const { text, rating, userId, productId, name } = req.body;
     
         try {
+            const boughtProduct = await BoughtProduct.findOne({
+                user: userId,
+                product: productId,
+                completed: true
+            }).exec();
+    
+            if (!boughtProduct) {
+                return res.status(403).json({
+                    error: 'No puedes comentar un producto que no has comprado o no ha sido completado',
+                    boughtProduct: boughtProduct
+                });
+            }
+
             const product = await Product.findById(productId).exec();
     
             if (!product) {
                 return res.status(404).json({ error: 'Producto no encontrado' });
             }
-    
+
             const newComment = new Comment({
                 text,
                 rating,
@@ -42,13 +57,29 @@ const CommentController = {
     },    
 
     editComment: async (req, res) => {
-        const commentId = req.params.CommentId;
-        const { text, rating } = req.body;
+        const commentId = req.params.id;
+        const { text, rating, userId } = req.body;
 
         try {
+            const user = await User.findById(userId).exec();
+            
+            if (!user) {
+                return res.status(404).json({ error: 'Usuario no encontrado' });
+            }
+
+            const comment = await Comment.findById(commentId).exec();
+
+            if (!comment) {
+                return res.status(404).json({ error: "Comentario no encontrado" });
+            }
+
+            if (comment.user.toString() !== userId) {
+                return res.status(403).json({ error: "No tienes permisos para editar este producto" });
+            }
+
             const updatedComment = await Comment.findByIdAndUpdate(
                 commentId,
-                { text, rating },
+                { text, rating, user: userId },
                 { new: true }
             );
 

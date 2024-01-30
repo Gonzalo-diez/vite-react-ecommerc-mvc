@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// Define el modelo de productos vendidos en Mongoose
 const soldProductSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },

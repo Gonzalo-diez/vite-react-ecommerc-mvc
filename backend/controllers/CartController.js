@@ -49,6 +49,7 @@ const CartController = {
                 title: product.title,
                 quantity: 1,
                 price: product.price,
+                completed: true,
             });
 
             await boughtProduct.save();

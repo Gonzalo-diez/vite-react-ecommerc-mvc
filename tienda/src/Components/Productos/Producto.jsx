@@ -14,6 +14,8 @@ function Producto({ isAuthenticated, addToCart, user }) {
     const [userName, setUserName] = useState("");
     const [showToast, setShowToast] = useState(false);
     const [showToastComentario, setShowToastComentario] = useState(false);
+    const [hasPurchased, setHasPurchased] = useState(false);
+    const [hasCommented, setHasCommented] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const COMMENTS_PER_PAGE = 3;
     const startIndex = (currentPage - 1) * COMMENTS_PER_PAGE;
@@ -47,6 +49,7 @@ function Producto({ isAuthenticated, addToCart, user }) {
     const handleAddToCart = () => {
         addToCart(product);
         setShowToast(true);
+        setHasPurchased(true);
     };
 
     const userId = user ? user._id : null;
@@ -89,6 +92,7 @@ function Producto({ isAuthenticated, addToCart, user }) {
                     setComments(comentariosRes.data);
                     setNewComment("");
                     setShowToastComentario(true);
+                    setHasCommented(true);
                 }
             } catch (err) {
                 console.error('Error al agregar el comentario:', err);
@@ -114,7 +118,7 @@ function Producto({ isAuthenticated, addToCart, user }) {
                         <Card.Text>$<strong>{product.price}</strong></Card.Text>
                         <Card.Text>Cantidad: {product.stock}</Card.Text>
                         <Card.Text>{product.description}</Card.Text>
-                        {isAuthenticated && (
+                        {isAuthenticated && !hasPurchased && (
                             <Button onClick={handleAddToCart} variant="primary">Agregar al Carrito <IoCart /></Button>
                         )}
                     </Card.Body>
@@ -182,7 +186,7 @@ function Producto({ isAuthenticated, addToCart, user }) {
                         </Pagination>
                     </div>
                 )}
-                {isAuthenticated && (
+                {isAuthenticated && !hasCommented && (
                     <div className="nuevo-comentario">
                         <Form>
                             <Form.Group controlId="nombre">
