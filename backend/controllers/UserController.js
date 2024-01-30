@@ -198,8 +198,6 @@ const UserController = {
         const userId = req.params.id;
         const { name, surname, email } = req.body;
     
-        console.log('Usuario ID recibido:', userId);
-    
         try {
             const imageName = req.file ? req.file.filename : null;
     

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { Card, Button, Form, Toast, ToastContainer, Row, Col, Pagination } from 'react-bootstrap';
-import { IoCart } from "react-icons/io5";
+import { Card, Button, Form, Toast, ToastContainer, Row, Col, Pagination, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { IoCart, IoStar, IoStarOutline } from "react-icons/io5";
 import { BiSolidCommentAdd } from "react-icons/bi";
 
 function Producto({ isAuthenticated, addToCart, user }) {
@@ -10,6 +10,7 @@ function Producto({ isAuthenticated, addToCart, user }) {
     const [product, setProduct] = useState(null);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState("");
+    const [rating, setRating] = useState("");
     const [userName, setUserName] = useState("");
     const [showToast, setShowToast] = useState(false);
     const [showToastComentario, setShowToastComentario] = useState(false);
@@ -54,6 +55,10 @@ function Producto({ isAuthenticated, addToCart, user }) {
         setNewComment(event.target.value);
     };
 
+    const handleRatingChange = (value) => {
+        setRating(value);
+    };
+
     const handleNombreChange = (event) => {
         setName(event.target.value);
     };
@@ -67,6 +72,7 @@ function Producto({ isAuthenticated, addToCart, user }) {
             try {
                 const comentarioData = {
                     text: newComment,
+                    rating: rating,
                     userId: userId,
                     productId: id,
                     name: userName,
@@ -143,6 +149,18 @@ function Producto({ isAuthenticated, addToCart, user }) {
                                         <p><strong>{comment.name}:</strong></p>
                                     )}
                                     <p>{comment.text}</p>
+                                    <p>
+                                        <OverlayTrigger
+                                            placement="bottom"
+                                            overlay={<Tooltip id={`tooltip-rating-${comment._id}`}>{`Rating: ${comment.rating}`}</Tooltip>}
+                                        >
+                                            <span className="rating-stars">
+                                                {Array.from({ length: comment.rating }, (_, i) => (
+                                                    <IoStar key={i} />
+                                                ))}
+                                            </span>
+                                        </OverlayTrigger>
+                                    </p>
                                     <p>Fecha: {new Date(comment.date).toLocaleString()}</p>
                                 </div>
                             </Col>
@@ -185,6 +203,18 @@ function Producto({ isAuthenticated, addToCart, user }) {
                                     value={newComment}
                                     onChange={handleComentarioChange}
                                 />
+                            </Form.Group>
+                            <Form.Group controlId="rating">
+                                <Form.Label>Rating:</Form.Label>
+                                <span className="rating-stars">
+                                    {[1, 2, 3, 4, 5].map((value) => (
+                                        <IoStarOutline
+                                            key={value}
+                                            className={`star-icon ${value <= rating ? 'filled' : ''}`}
+                                            onClick={() => handleRatingChange(value)}
+                                        />
+                                    ))}
+                                </span>
                             </Form.Group>
                             <Button onClick={handleSubmitComentario} variant="primary" className="btn-comentario">
                                <BiSolidCommentAdd /> Comentario 

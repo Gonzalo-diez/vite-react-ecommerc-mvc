@@ -1,8 +1,9 @@
 /* === Ajustes generales ===*/
-body, html {
+body,
+html {
     margin: 0;
     padding: 0;
-    overflow-x: hidden; 
+    overflow-x: hidden;
 }
 
 .alert {
@@ -34,7 +35,7 @@ body, html {
 }
 
 
-/* === About ===*/ 
+/* === About ===*/
 .logos-container {
     display: flex;
 }
@@ -48,7 +49,7 @@ body, html {
 .card-producto {
     width: 20rem;
     height: 100%;
-}  
+}
 
 /* === Categoria === */
 .card-categoria {
@@ -75,6 +76,15 @@ body, html {
 .comentarios-container .btn-comentario {
     margin-top: 8px;
     margin-left: 16px;
+}
+
+.star-icon {
+    color: #ddd;
+    cursor: pointer;
+}
+
+.star-icon.filled {
+    color: #f8d120;
 }
 
 /* === Formulario eliminar producto ===*/

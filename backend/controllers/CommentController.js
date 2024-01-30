@@ -2,8 +2,20 @@ const Comment = require("../models/comment");
 const Product = require("../models/product");
 
 const CommentController = {
+    getRatings: async (req, res, next) => {
+        const { rating } = req.body;
+
+        try {
+            const ratings = await Comment.find(rating);
+            return res.json(ratings);
+        } catch (err) {
+            console.error('Error:', err);
+            return res.status(500).json({ error: "Error en la base de datos", details: err.message });
+        }
+    },
+
     addComment: async (req, res) => {
-        const { text, userId, productId, name } = req.body;
+        const { text, rating, userId, productId, name } = req.body;
     
         try {
             const product = await Product.findById(productId).exec();
@@ -14,6 +26,7 @@ const CommentController = {
     
             const newComment = new Comment({
                 text,
+                rating,
                 user: userId,
                 product: productId,
                 name,
@@ -30,12 +43,12 @@ const CommentController = {
 
     editComment: async (req, res) => {
         const commentId = req.params.CommentId;
-        const { text } = req.body;
+        const { text, rating } = req.body;
 
         try {
             const updatedComment = await Comment.findByIdAndUpdate(
                 commentId,
-                { text },
+                { text, rating },
                 { new: true }
             );
 
