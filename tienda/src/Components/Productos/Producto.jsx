@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Card, Button, Form, Toast, ToastContainer, Row, Col, Pagination, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { IoCart, IoStar, IoStarOutline } from "react-icons/io5";
+import { IoCart, IoStar, IoStarOutline, IoPencil, IoTrash  } from "react-icons/io5";
 import { BiSolidCommentAdd } from "react-icons/bi";
+import { useAuth } from "../context/AuthContext";
 
 function Producto({ isAuthenticated, addToCart, user }) {
+    const navigate = useNavigate();
+    const { userId } = useAuth();
     const { id } = useParams();
     const [product, setProduct] = useState(null);
     const [comments, setComments] = useState([]);
@@ -34,6 +37,13 @@ function Producto({ isAuthenticated, addToCart, user }) {
                 if (isAuthenticated && user && user._id) {
                     const userRes = await axios.get(`${serverUrl}/usuarios/detalle/${user._id}`);
                     setUserName(userRes.data.name);
+                    
+                    const boughtProductsRes = await axios.get(`${serverUrl}/usuarios/protected/productosComprados/${user._id}`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        }
+                    });
+                    setHasPurchased(boughtProductsRes.data.length > 0);
                 }
         
                 const comentariosRes = await axios.get(`${serverUrl}/productos/comentarios/${id}`);
@@ -52,8 +62,6 @@ function Producto({ isAuthenticated, addToCart, user }) {
         setHasPurchased(true);
     };
 
-    const userId = user ? user._id : null;
-
     const handleComentarioChange = (event) => {
         setNewComment(event.target.value);
     };
@@ -68,6 +76,14 @@ function Producto({ isAuthenticated, addToCart, user }) {
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
+    };
+
+    const handleEliminarComentario = async (id) => {
+        try {
+          navigate(`/comentarios/protected/borrar/${id}`);
+        } catch (err) {
+          console.log(err);
+        }
     };
 
     const handleSubmitComentario = async () => {
@@ -166,6 +182,12 @@ function Producto({ isAuthenticated, addToCart, user }) {
                                         </OverlayTrigger>
                                     </p>
                                     <p>Fecha: {new Date(comment.date).toLocaleString()}</p>
+                                    {isAuthenticated && userId && userId === comment.user  && (
+                                        <div className="inicio-link-container">
+                                            <Button variant="warning" onClick={() => navigate(`/comentarios/protected/editar/${comment._id}`)}><IoPencil /></Button>
+                                            <Button variant="danger" onClick={() => handleEliminarComentario(comment._id)}><IoTrash /></Button>
+                                        </div>
+                                    )}
                                 </div>
                             </Col>
                         ))}

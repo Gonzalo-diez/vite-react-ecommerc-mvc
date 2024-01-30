@@ -16,6 +16,8 @@ import EditarPassword from './Editar/EditarPassword';
 import EditarPerfil from './Editar/EditarPerfil';
 import './css/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import EditarComentario from './Editar/EditarComentario';
+import BorrarComentario from './Borrar/BorrarComentario';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -47,6 +49,8 @@ function App() {
           <Route path="/usuarios/protected/:userId" element={<User isAuthenticated={isAuthenticated} user={user} setUser={setUser} />} />
           <Route path="/usuarios/protected/editarPerfil/:id" element={<EditarPerfil />} />
           <Route path="/usuarios/protected/cambiarContrasena/:userId" element={<EditarPassword />} />
+          <Route path="/comentarios/protected/editar/:id" element={<EditarComentario />} />
+          <Route path="/comentarios/protected/borrar/:id" element={<BorrarComentario />} />
           <Route path="/productos/detalle/:id" element={<Producto isAuthenticated={isAuthenticated} addToCart={addToCart} user={user} />} />
           <Route path="/productos/:category" element={<ProductoCategoria />} />
           <Route path="/productos/protected/agregar" element={<AgregarProductos isAuthenticated={isAuthenticated} user={user} />} />

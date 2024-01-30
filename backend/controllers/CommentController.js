@@ -1,3 +1,4 @@
+const mongoose = require("mongoose")
 const Comment = require("../models/comment");
 const Product = require("../models/product");
 const User = require("../models/user");
@@ -10,6 +11,22 @@ const CommentController = {
         try {
             const ratings = await Comment.find(rating);
             return res.json(ratings);
+        } catch (err) {
+            console.error('Error:', err);
+            return res.status(500).json({ error: "Error en la base de datos", details: err.message });
+        }
+    },
+
+    getCommentById: async (req, res) => {
+        const commentId = req.params.id;
+
+        try {
+            const commentObjectId = new mongoose.Types.ObjectId(commentId);
+            const comment = await Comment.findById(commentObjectId).select("text rating").exec();
+            if (!comment) {
+                return res.status(404).json({ error: "Usuario no encontrado" });
+            }
+            return res.json(comment);
         } catch (err) {
             console.error('Error:', err);
             return res.status(500).json({ error: "Error en la base de datos", details: err.message });
@@ -95,7 +112,7 @@ const CommentController = {
     },
 
     deleteComment: async (req, res) => {
-        const commentId = req.params.commentId;
+        const commentId = req.params.id;
 
         try {
             const result = await Comment.deleteOne({ _id: commentId });
