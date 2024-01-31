@@ -3,8 +3,11 @@ import { useAuth } from "../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Button, Card, ListGroup, ListGroupItem } from "react-bootstrap";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Pie } from "react-chartjs-2";
 
 function User({ isAuthenticated, user, setUser }) {
+  ChartJS.register(ArcElement, Tooltip, Legend);
   const { userId } = useAuth();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
@@ -59,7 +62,6 @@ function User({ isAuthenticated, user, setUser }) {
         });
         if (boughtRes.data) {
           setBought(boughtRes.data);
-          console.log(boughtRes.data);
         } else {
           console.error("La respuesta del servidor no tiene la estructura esperada:", boughtRes.data);
         }
@@ -78,7 +80,6 @@ function User({ isAuthenticated, user, setUser }) {
         });
         if (soldRes.data) {
           setSold(soldRes.data);
-          console.log(soldRes.data);
         } else {
           console.error("La respuesta del servidor no tiene la estructura esperada:", soldRes.data);
         }
@@ -100,6 +101,69 @@ function User({ isAuthenticated, user, setUser }) {
 
   const handlerEditarPerfil = () => {
     navigate(`/usuarios/protected/editarPerfil/${userId}`);
+  };
+
+  const getRandomColor = () => {
+    const randomValue = () => Math.floor(Math.random() * 256);
+    return `rgb(${randomValue()}, ${randomValue()}, ${randomValue()})`;
+  };
+
+  const getSoldChart = (products) => {
+    if (!products || products.length === 0) {
+      return { labels: [], datasets: [{ data: [] }] };
+    }
+
+    const validProducts = products.filter(
+      (soldProd) => soldProd && soldProd.title && soldProd.price && soldProd.quantity
+    );
+
+    const names = validProducts.map((soldProd) => soldProd.title);
+    const totalPrice = validProducts.map((soldProd) => soldProd.quantity * soldProd.price);
+
+    const data = totalPrice;
+
+    const backgroundColor = Array.from({ length: data.length }, () => getRandomColor());
+
+    return {
+      labels: names,
+      datasets: [{ data, backgroundColor, radius: 400 }],
+    };
+  };
+
+  const soldOption = {
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom',
+      },
+    },
+  };
+
+  const getCreatedChart = (products) => {
+    if (!products || products.length === 0) {
+      return { labels: [], datasets: [{ data: [] }] };
+    }
+  
+    const validProducts = products.filter((createdProd) => createdProd && createdProd.title && createdProd.stock);
+    const names = validProducts.map((createdProd) => createdProd.title);
+    const stock = validProducts.map((createdProd) => createdProd.stock);
+  
+    const backgroundColor = Array.from({ length: stock.length }, () => getRandomColor());
+  
+    return {
+      labels: names,
+      datasets: [{ data: stock, backgroundColor, radius: 400 }],
+    };
+  };
+  
+
+  const createdOption = {
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom',
+      },
+    },
   };
 
   return (
@@ -131,16 +195,12 @@ function User({ isAuthenticated, user, setUser }) {
           <div>
             <h3>Productos Creados:</h3>
             {product && product.createdProducts && product.createdProducts.length > 0 ? (
-              <ul>
-                {product.createdProducts.map((prod) => (
-                  <li key={prod._id}>
-                    <strong>Título:</strong> {prod.title}, <strong>Categoría:</strong> {prod.category}
-                    <Button onClick={() => navigate(`/productos/detalle/${prod._id}`)}>Detalles</Button>
-                  </li>
-                ))}
-              </ul>
+              <div>
+                <h4>Stock total de los productos creados</h4>
+                <Pie data={getCreatedChart(product.createdProducts)} options={createdOption} />
+              </div>
             ) : (
-              <p>No has creado productos aún.</p>
+              <p>No has vendido productos aún.</p>
             )}
           </div>
 
@@ -163,14 +223,10 @@ function User({ isAuthenticated, user, setUser }) {
           <div>
             <h3>Productos Vendidos:</h3>
             {sold && sold.soldProducts && sold.soldProducts.length > 0 ? (
-              <ul>
-                {sold.soldProducts.map((soldProd) => (
-                  <li key={soldProd._id}>
-                    <strong>Título:</strong> {soldProd.title}, <strong>Cantidad:</strong> {soldProd.quantity}, <strong>Precio Total:</strong> {soldProd.price}
-                    <Button onClick={() => navigate(`/productos/detalle/${soldProd._id}`)}>Detalles</Button>
-                  </li>
-                ))}
-              </ul>
+              <div>
+                <h4>Ganancia Total de Productos Vendidos</h4>
+                <Pie data={getSoldChart(sold.soldProducts)} options={soldOption} />
+              </div>
             ) : (
               <p>No has vendido productos aún.</p>
             )}

@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Card, Button, Form, Toast, ToastContainer, Row, Col, Pagination, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { IoCart, IoStar, IoStarOutline, IoPencil, IoTrash  } from "react-icons/io5";
+import { IoCart, IoStar, IoStarOutline, IoPencil, IoTrash } from "react-icons/io5";
 import { BiSolidCommentAdd } from "react-icons/bi";
 import { useAuth } from "../context/AuthContext";
+import StarRating from "./StarRating";
 
 function Producto({ isAuthenticated, addToCart, user }) {
     const navigate = useNavigate();
@@ -25,6 +26,15 @@ function Producto({ isAuthenticated, addToCart, user }) {
     const endIndex = startIndex + COMMENTS_PER_PAGE;
     const displayedComments = comments.slice(startIndex, endIndex);
 
+    const calculateAverageRating = () => {
+        if (comments.length === 0) {
+            return 0;
+        }
+
+        const totalRating = comments.reduce((sum, comment) => sum + comment.rating, 0);
+        return totalRating / comments.length;
+    };
+
     const serverUrl = "http://localhost:8800";
     const token = localStorage.getItem("jwtToken");
 
@@ -33,11 +43,11 @@ function Producto({ isAuthenticated, addToCart, user }) {
             try {
                 const res = await axios.get(`${serverUrl}/productos/detalle/${id}`);
                 setProduct(res.data);
-        
+
                 if (isAuthenticated && user && user._id) {
                     const userRes = await axios.get(`${serverUrl}/usuarios/detalle/${user._id}`);
                     setUserName(userRes.data.name);
-                    
+
                     const boughtProductsRes = await axios.get(`${serverUrl}/usuarios/protected/productosComprados/${user._id}`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -45,14 +55,14 @@ function Producto({ isAuthenticated, addToCart, user }) {
                     });
                     setHasPurchased(boughtProductsRes.data.length > 0);
                 }
-        
+
                 const comentariosRes = await axios.get(`${serverUrl}/productos/comentarios/${id}`);
                 console.log('Comentarios obtenidos:', comentariosRes.data);
                 setComments(comentariosRes.data);
             } catch (err) {
                 console.log(err);
             }
-        };        
+        };
         fetchProducto();
     }, [id, isAuthenticated, user]);
 
@@ -80,9 +90,9 @@ function Producto({ isAuthenticated, addToCart, user }) {
 
     const handleEliminarComentario = async (id) => {
         try {
-          navigate(`/comentarios/protected/borrar/${id}`);
+            navigate(`/comentarios/protected/borrar/${id}`);
         } catch (err) {
-          console.log(err);
+            console.log(err);
         }
     };
 
@@ -96,13 +106,13 @@ function Producto({ isAuthenticated, addToCart, user }) {
                     productId: id,
                     name: userName,
                 };
-    
+
                 const response = await axios.post(`${serverUrl}/comentarios/protected/agregar`, comentarioData, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-    
+
                 if (response.status === 200) {
                     const comentariosRes = await axios.get(`${serverUrl}/productos/comentarios/${id}`);
                     setComments(comentariosRes.data);
@@ -117,7 +127,7 @@ function Producto({ isAuthenticated, addToCart, user }) {
             alert("Debes iniciar sesión o registrarte para comentar.");
         }
     };
-    
+
 
     if (!product) {
         return <p>No hay productos de esta categoria</p>;
@@ -157,40 +167,61 @@ function Producto({ isAuthenticated, addToCart, user }) {
             </div>
 
             <div className="comentarios-container">
-                <h3>Comentarios</h3>
+                <h3>Opiniones</h3>
                 {comments.length === 0 ? (
                     <p>Sin comentarios</p>
                 ) : (
                     <Row>
-                        {displayedComments.map((comment) => (
-                            <Col key={comment._id} xs={12} md={6} lg={4}>
-                                <div className="comentario">
-                                    {comment.name && (
-                                        <p><strong>{comment.name}:</strong></p>
-                                    )}
-                                    <p>{comment.text}</p>
-                                    <p>
-                                        <OverlayTrigger
-                                            placement="bottom"
-                                            overlay={<Tooltip id={`tooltip-rating-${comment._id}`}>{`Rating: ${comment.rating}`}</Tooltip>}
-                                        >
-                                            <span className="rating-stars">
-                                                {Array.from({ length: comment.rating }, (_, i) => (
-                                                    <IoStar key={i} />
-                                                ))}
-                                            </span>
-                                        </OverlayTrigger>
-                                    </p>
-                                    <p>Fecha: {new Date(comment.date).toLocaleString()}</p>
-                                    {isAuthenticated && userId && userId === comment.user  && (
-                                        <div className="inicio-link-container">
-                                            <Button variant="warning" onClick={() => navigate(`/comentarios/protected/editar/${comment._id}`)}><IoPencil /></Button>
-                                            <Button variant="danger" onClick={() => handleEliminarComentario(comment._id)}><IoTrash /></Button>
-                                        </div>
-                                    )}
+                        <Col md={3}>
+                            {comments.length > 0 && (
+                                <div className="average-rating">
+                                    <h4>Promedio de Ratings</h4>
+                                    <StarRating averageRating={calculateAverageRating()} />
                                 </div>
-                            </Col>
-                        ))}
+                            )}
+                        </Col>
+
+                        <Col md={9}>
+                            {comments.length === 0 ? (
+                                <p>Sin comentarios</p>
+                            ) : (
+                                <div className="comentarios-list">
+                                    {displayedComments.map((comment) => (
+                                        <div key={comment._id} className="comentario">
+                                            {comment.name && (
+                                                <p>
+                                                    <strong>{comment.name}:</strong>
+                                                </p>
+                                            )}
+                                            <p>{comment.text}</p>
+                                            <p>
+                                                <OverlayTrigger
+                                                    placement="bottom"
+                                                    overlay={<Tooltip id={`tooltip-rating-${comment._id}`}>{`Rating: ${comment.rating}`}</Tooltip>}
+                                                >
+                                                    <span className="rating-stars">
+                                                        {Array.from({ length: comment.rating }, (_, i) => (
+                                                            <IoStar key={i} />
+                                                        ))}
+                                                    </span>
+                                                </OverlayTrigger>
+                                            </p>
+                                            <p>Fecha: {new Date(comment.date).toLocaleString()}</p>
+                                            {isAuthenticated && userId && userId === comment.user && (
+                                                <div className="inicio-link-container">
+                                                    <Button variant="warning" onClick={() => navigate(`/comentarios/protected/editar/${comment._id}`)}>
+                                                        <IoPencil />
+                                                    </Button>
+                                                    <Button variant="danger" onClick={() => handleEliminarComentario(comment._id)}>
+                                                        <IoTrash />
+                                                    </Button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </Col>
                     </Row>
                 )}
                 {comments.length > COMMENTS_PER_PAGE && (
@@ -222,7 +253,7 @@ function Producto({ isAuthenticated, addToCart, user }) {
                                 />
                             </Form.Group>
                             <Form.Group controlId="nuevoComentario">
-                                <Form.Label>Deja un comentario:</Form.Label>
+                                <Form.Label>Deja una opinion:</Form.Label>
                                 <Form.Control
                                     as="textarea"
                                     rows={3}
@@ -243,7 +274,7 @@ function Producto({ isAuthenticated, addToCart, user }) {
                                 </span>
                             </Form.Group>
                             <Button onClick={handleSubmitComentario} variant="primary" className="btn-comentario">
-                               <BiSolidCommentAdd /> Comentario 
+                                <BiSolidCommentAdd /> Comentario
                             </Button>
                         </Form>
                         <Toast

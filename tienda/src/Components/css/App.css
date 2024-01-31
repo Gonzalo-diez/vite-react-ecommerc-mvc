@@ -73,10 +73,21 @@ html {
     margin-bottom: 25px;
 }
 
+.comentarios-list {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 20px;
+}
+
+.comentarios-list .comentario {
+    min-width: 300px;
+}
+
 .comentarios-container .btn-comentario {
     margin-top: 8px;
     margin-left: 16px;
 }
+
 
 .star-icon {
     color: #ddd;
