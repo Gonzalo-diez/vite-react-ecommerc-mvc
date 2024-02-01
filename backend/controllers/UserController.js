@@ -168,16 +168,16 @@ const UserController = {
 
     getUserSoldProducts: async (req, res) => {
         const userId = req.params.id;
-
+    
         try {
             const user = await User.findById(userId).exec();
-
+    
             if (!user) {
                 return res.status(404).json({ error: "Usuario no encontrado" });
             }
-
-            const userSoldProducts = await SoldProduct.find({ user: userId }).exec();
-
+    
+            const userSoldProducts = await SoldProduct.find({ seller: userId }).populate('product').exec();
+    
             return res.json({
                 user: {
                     _id: user._id,
@@ -192,7 +192,7 @@ const UserController = {
             console.error("Error al obtener los productos del usuario:", err);
             return res.status(500).json({ error: "Error en la base de datos", details: err.message });
         }
-    },
+    },    
 
     editUserProfile: async (req, res) => {
         const userId = req.params.id;

@@ -44,6 +44,7 @@ const Carrito = ({ cart, removeFromCart, isAuthenticated, user }) => {
           cardBank,
           securityNumber,
           userId,
+          quantity: producto.quantity,
         }, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -74,7 +75,7 @@ const Carrito = ({ cart, removeFromCart, isAuthenticated, user }) => {
         <ul>
           {cart.map((producto) => (
             <li key={producto._id}>
-              {producto.title} - ${producto.price}
+              {producto.title} - total: ${producto.price * producto.quantity}
               <Button variant="danger" onClick={() => removeFromCart(producto._id)} className="btn-eliminar">Quitar</Button>
             </li>
           ))}

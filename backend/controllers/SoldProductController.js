@@ -12,7 +12,7 @@ const SoldProductController = {
         return res.status(404).json({ error: "Usuario no encontrado" });
       }
 
-      const soldProducts = await SoldProduct.find({ user: userId }).populate({
+      const soldProducts = await SoldProduct.find({ seller: userId, status: 'activo' }).populate({
         path: 'product',
         model: 'Product',
       }).exec();

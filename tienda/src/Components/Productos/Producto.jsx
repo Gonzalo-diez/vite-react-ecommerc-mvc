@@ -16,6 +16,7 @@ function Producto({ isAuthenticated, addToCart, user }) {
     const [newComment, setNewComment] = useState("");
     const [rating, setRating] = useState("");
     const [userName, setUserName] = useState("");
+    const [quantity, setQuantity] = useState(1);
     const [showToast, setShowToast] = useState(false);
     const [showToastComentario, setShowToastComentario] = useState(false);
     const [hasPurchased, setHasPurchased] = useState(false);
@@ -67,7 +68,7 @@ function Producto({ isAuthenticated, addToCart, user }) {
     }, [id, isAuthenticated, user]);
 
     const handleAddToCart = () => {
-        addToCart(product);
+        addToCart({ ...product, quantity });
         setShowToast(true);
         setHasPurchased(true);
     };
@@ -144,6 +145,20 @@ function Producto({ isAuthenticated, addToCart, user }) {
                         <Card.Text>$<strong>{product.price}</strong></Card.Text>
                         <Card.Text>Cantidad: {product.stock}</Card.Text>
                         <Card.Text>{product.description}</Card.Text>
+                        <Card.Text>Cantidad: {product.stock}</Card.Text>
+                        <Form.Group controlId="formCantidad">
+                            <Form.Label>Cantidad</Form.Label>
+                            <Form.Control
+                                type="number"
+                                name="cantidad"
+                                value={quantity}
+                                onChange={(e) => {
+                                    const newQuantity = parseInt(e.target.value, 10);
+                                    setQuantity(newQuantity >= 1 ? newQuantity : 1);
+                                }}
+                                required
+                            />
+                        </Form.Group>
                         {isAuthenticated && !hasPurchased && (
                             <Button onClick={handleAddToCart} variant="primary">Agregar al Carrito <IoCart /></Button>
                         )}

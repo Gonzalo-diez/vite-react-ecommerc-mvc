@@ -62,6 +62,7 @@ function User({ isAuthenticated, user, setUser }) {
         });
         if (boughtRes.data) {
           setBought(boughtRes.data);
+          console.log(boughtRes.data)
         } else {
           console.error("La respuesta del servidor no tiene la estructura esperada:", boughtRes.data);
         }
@@ -80,6 +81,7 @@ function User({ isAuthenticated, user, setUser }) {
         });
         if (soldRes.data) {
           setSold(soldRes.data);
+          console.log(soldRes.data);
         } else {
           console.error("La respuesta del servidor no tiene la estructura esperada:", soldRes.data);
         }
@@ -112,24 +114,32 @@ function User({ isAuthenticated, user, setUser }) {
     if (!products || products.length === 0) {
       return { labels: [], datasets: [{ data: [] }] };
     }
-
+  
     const validProducts = products.filter(
-      (soldProd) => soldProd && soldProd.title && soldProd.price && soldProd.quantity
+      (soldProd) => soldProd && soldProd.product && soldProd.product.title && soldProd.price && soldProd.quantity
     );
-
-    const names = validProducts.map((soldProd) => soldProd.title);
-    const totalPrice = validProducts.map((soldProd) => soldProd.quantity * soldProd.price);
-
-    const data = totalPrice;
-
+  
+    if (validProducts.length === 0) {
+      return { labels: [], datasets: [{ data: [] }] };
+    }
+  
+    const names = validProducts.map((soldProd) => soldProd.product.title);
+    const totalPrices = validProducts.map((soldProd) => soldProd.price * soldProd.quantity); // Calcular ingreso total
+  
+    const data = totalPrices;
+  
     const backgroundColor = Array.from({ length: data.length }, () => getRandomColor());
-
+  
     return {
       labels: names,
-      datasets: [{ data, backgroundColor, radius: 400 }],
+      datasets: [{
+        data,
+        backgroundColor,
+        radius: 400,
+      }],
     };
-  };
-
+  };  
+  
   const soldOption = {
     plugins: {
       legend: {

@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const BoughtProduct = require('../models/BoughtProduct');
+const BoughtProduct = require('../models/boughtProduct');
 
 const BoughtProductController = {
   getBoughtProducts: async (req, res) => {

@@ -64,20 +64,20 @@ const ProductController = {
 
     addProduct: async (req, res, next) => {
         const { title, brand, description, price, stock, category, userId } = req.body;
-
+    
         try {
             const user = await User.findById(userId).exec();
             
             if (!user) {
-                return res.status(404).json({ error: 'Producto no encontrado' });
+                return res.status(404).json({ error: 'Usuario no encontrado' });
             }
-
+    
             const imageName = req.file ? req.file.filename : null;
-
+    
             if (!imageName) {
                 return res.status(400).json({ error: 'No se proporcionó una imagen válida' });
             }
-
+    
             const newProduct = new Product({
                 title,
                 brand,
@@ -88,37 +88,22 @@ const ProductController = {
                 image: imageName,
                 user: userId,
             });
-
+    
             const savedProduct = await newProduct.save();
-
+    
             user.createdProducts.push(savedProduct);
             await user.save();
-
-            const productId = savedProduct._id;
-            const status = "Activo";
-
-            const soldProduct = new SoldProduct({
-                user: userId,
-                product: productId,
-                title,
-                quantity: 1,
-                price,
-                status: status,
-            });
-
-            await soldProduct.save();
-
-
+    
             return res.json({
                 message: "Producto creado!!!",
                 Product: newProduct,
             });
-
         } catch (err) {
             console.error("Error al guardar el Producto:", err);
             return res.status(500).json({ error: "Error en la base de datos", details: err.message });
         }
     },
+    
 
     updateProduct: async (req, res, next) => {
         const productId = req.params.id;

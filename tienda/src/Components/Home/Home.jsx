@@ -11,6 +11,8 @@ function Home({ isAuthenticated }) {
   const navigate = useNavigate();
   const { userId } = useAuth();
 
+  const token = localStorage.getItem("jwtToken");
+
   useEffect(() => {
     const fetchProductos = async () => {
       try {
@@ -49,7 +51,7 @@ function Home({ isAuthenticated }) {
             </Col>
           </Row>
           <Row>
-            {isAuthenticated ? (
+            {isAuthenticated && token ? (
               <Button variant="primary" onClick={handleAgregarProducto} >Agregar producto</Button>
             ) : (
               <Col>
