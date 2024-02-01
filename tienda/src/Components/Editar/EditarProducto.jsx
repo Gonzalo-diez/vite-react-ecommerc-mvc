@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import "../css/App.css";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from '../Context/authContext';
 
 function EditarProducto({ isAuthenticated }) {
     const { id } = useParams();

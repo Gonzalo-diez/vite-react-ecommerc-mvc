@@ -6,7 +6,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import { FaUser } from "react-icons/fa";
 import { IoCartOutline } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from '../Context/authContext';
 import axios from "axios";
 
 function Menu({ isAuthenticated, user }) {

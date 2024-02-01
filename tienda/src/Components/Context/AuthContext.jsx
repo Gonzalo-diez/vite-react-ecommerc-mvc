@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
 
   const setAuthenticatedUserId = (id) => {
       setUserId(id);
-      setIsAuthenticated(!!id); // Establecer el estado de autenticación
+      setIsAuthenticated(!!id); 
   };
 
   return (
@@ -18,6 +18,6 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => {
+export const UseAuth = () => {
   return useContext(AuthContext);
 };

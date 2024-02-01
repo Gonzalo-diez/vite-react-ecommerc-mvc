@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../Context/authContext';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const EditarComentario = () => {

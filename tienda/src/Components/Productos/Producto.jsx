@@ -4,7 +4,7 @@ import axios from "axios";
 import { Card, Button, Form, Toast, ToastContainer, Row, Col, Pagination, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { IoCart, IoStar, IoStarOutline, IoPencil, IoTrash } from "react-icons/io5";
 import { BiSolidCommentAdd } from "react-icons/bi";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from '../Context/authContext';
 import StarRating from "./StarRating";
 
 function Producto({ isAuthenticated, addToCart, user }) {
