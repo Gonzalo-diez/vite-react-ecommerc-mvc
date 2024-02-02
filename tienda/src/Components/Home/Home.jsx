@@ -4,7 +4,7 @@ import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { IoPencil, IoTrash } from "react-icons/io5";
 import axios from "axios";
 import "../css/App.css";
-import { useAuth } from '../Context/authContext';
+import { useAuth } from "../Context/authContext";
 
 function Home({ isAuthenticated }) {
   const [products, setProducts] = useState([]);

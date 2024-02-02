@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { Form, Button, Toast } from 'react-bootstrap';
-import { useAuth } from '../Context/authContext';
+import { useAuth } from "../Context/AuthContext";
 
 const Login = ({ setIsAuthenticated }) => {
   const { setAuthenticatedUserId } = useAuth();

@@ -13,9 +13,22 @@ function User({ isAuthenticated, user, setUser }) {
   const [product, setProduct] = useState(null);
   const [bought, setBought] = useState(null);
   const [sold, setSold] = useState(null);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   const serverUrl = "http://localhost:8800";
   const token = localStorage.getItem("jwtToken");
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -95,7 +108,7 @@ function User({ isAuthenticated, user, setUser }) {
     fetchCreatedProduct();
     fetchBoughtProduct();
     fetchSoldProduct();
-  }, [userId]);
+  }, [userId, windowWidth]);
 
   const handleCambiarPassword = () => {
     navigate(`/usuarios/protected/cambiarContrasena/${userId}`);
@@ -114,6 +127,8 @@ function User({ isAuthenticated, user, setUser }) {
     if (!products || products.length === 0) {
       return { labels: [], datasets: [{ data: [] }] };
     }
+
+    const radius = windowWidth < 768 ? 120 : 300;
   
     const validProducts = products.filter(
       (soldProd) => soldProd && soldProd.product && soldProd.product.title && soldProd.price && soldProd.quantity
@@ -124,7 +139,7 @@ function User({ isAuthenticated, user, setUser }) {
     }
   
     const names = validProducts.map((soldProd) => soldProd.product.title);
-    const totalPrices = validProducts.map((soldProd) => soldProd.price * soldProd.quantity); // Calcular ingreso total
+    const totalPrices = validProducts.map((soldProd) => soldProd.price * soldProd.quantity);
   
     const data = totalPrices;
   
@@ -135,7 +150,7 @@ function User({ isAuthenticated, user, setUser }) {
       datasets: [{
         data,
         backgroundColor,
-        radius: 300,
+        radius,
       }],
     };
   };  
@@ -157,12 +172,13 @@ function User({ isAuthenticated, user, setUser }) {
     const validProducts = products.filter((createdProd) => createdProd && createdProd.title && createdProd.stock);
     const names = validProducts.map((createdProd) => createdProd.title);
     const stock = validProducts.map((createdProd) => createdProd.stock);
-  
+
+    const radius = windowWidth < 768 ? 120 : 300;
     const backgroundColor = Array.from({ length: stock.length }, () => getRandomColor());
   
     return {
       labels: names,
-      datasets: [{ data: stock, backgroundColor, radius: 300 }],
+      datasets: [{ data: stock, backgroundColor, radius,}],
     };
   };
   
@@ -218,6 +234,18 @@ function User({ isAuthenticated, user, setUser }) {
             )}
           </div>
 
+          <div className="sold-products-container">
+            <h3>Productos Vendidos:</h3>
+            {sold && sold.soldProducts && sold.soldProducts.length > 0 ? (
+              <div>
+                <h4>Ganancia Total de Productos Vendidos</h4>
+                <Pie data={getSoldChart(sold.soldProducts)} options={soldOption} />
+              </div>
+            ) : (
+              <p>No has vendido productos aún.</p>
+            )}
+          </div>
+
           <div className="bought-products-container">
             <h3>Productos Comprados:</h3>
             {bought && bought.boughtProducts && bought.boughtProducts.length > 0 ? (
@@ -231,18 +259,6 @@ function User({ isAuthenticated, user, setUser }) {
               </ul>
             ) : (
               <p>No has comprado productos aún.</p>
-            )}
-          </div>
-
-          <div className="sold-products-container">
-            <h3>Productos Vendidos:</h3>
-            {sold && sold.soldProducts && sold.soldProducts.length > 0 ? (
-              <div>
-                <h4>Ganancia Total de Productos Vendidos</h4>
-                <Pie data={getSoldChart(sold.soldProducts)} options={soldOption} />
-              </div>
-            ) : (
-              <p>No has vendido productos aún.</p>
             )}
           </div>
         </div>

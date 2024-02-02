@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Button, Form, Toast, ToastContainer } from 'react-bootstrap';
 import '../css/App.css';
 import { useAuth } from '../Context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Carrito = ({ cart, removeFromCart, isAuthenticated, user }) => {
   const [showCompraForm, setShowCompraForm] = useState(false);
@@ -16,6 +17,7 @@ const Carrito = ({ cart, removeFromCart, isAuthenticated, user }) => {
   const { userId } = useAuth();
   const [showToast, setShowToast] = useState(false);
   const [showEmptyCartToast, setShowEmptyCartToast] = useState(false);
+  const navigate = useNavigate();
 
   const token = localStorage.getItem("jwtToken");
 
@@ -53,6 +55,7 @@ const Carrito = ({ cart, removeFromCart, isAuthenticated, user }) => {
         console.log(response.data);
         removeFromCart(productId);
         setShowToast(true);
+        navigate("/")
       }
 
       setShowCompraForm(false);

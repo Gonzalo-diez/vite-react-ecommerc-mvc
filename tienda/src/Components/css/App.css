@@ -18,6 +18,12 @@ html {
     height: 70vh;
 }
 
+.button-link-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
 /* === Menu ===*/
 .avatar {
     width: 35px;
@@ -32,8 +38,14 @@ html {
 
 .cta-buttons {
     margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
 }
 
+.cta-buttons a {
+    flex: 1;
+    margin-right: 10px;
+}
 
 /* === About ===*/
 .logos-container {
@@ -87,7 +99,6 @@ html {
     margin-top: 8px;
     margin-left: 16px;
 }
-
 
 .star-icon {
     color: #ddd;
@@ -200,4 +211,53 @@ html {
 
 .footer-links a:hover {
     color: #007bff;
+}
+
+/* === Responsive 1024px === */
+
+@media (max-width: 1024px) {
+    /* === Usuario === */
+    .user-button-container {
+        margin-left: 23rem;
+    }
+    
+    .user-button-container button {
+        margin-right: 20px;
+    }
+}
+
+/* === Responsive 768px === */
+
+@media (max-width: 768px) {
+    /* === Usuario === */
+    .user-button-container {
+        margin-left: 15rem;
+    }
+}
+
+/* === Responsive 425px === */
+
+@media (max-width: 425px) {
+    /* === Usuario === */
+    .user-button-container {
+        margin-left: 4rem;
+    }
+}
+
+/* === Responsive 375px === */
+
+@media (max-width: 375px) {
+    /* === Usuario === */
+    .user-button-container {
+        margin-left: 2.5rem;
+    }
+}
+
+/* === Responsive 320px === */
+
+@media (max-width: 320px) {
+    /* === Usuario === */
+    .user-button-container {
+        margin-left: 2rem;
+    }
 }

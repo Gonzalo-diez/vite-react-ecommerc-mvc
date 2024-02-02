@@ -146,18 +146,25 @@ function Producto({ isAuthenticated, addToCart, user }) {
                         <Card.Text>Cantidad: {product.stock}</Card.Text>
                         <Card.Text>{product.description}</Card.Text>
                         <Card.Text>Cantidad: {product.stock}</Card.Text>
-                        <Form.Group controlId="formCantidad">
-                            <Form.Label>Cantidad</Form.Label>
+                        <Form.Group controlId="formCantidad" className="d-flex align-items-center">
+                            <Button
+                                variant="outline-primary"
+                                onClick={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}
+                            >
+                                -
+                            </Button>
                             <Form.Control
-                                type="number"
                                 name="cantidad"
                                 value={quantity}
-                                onChange={(e) => {
-                                    const newQuantity = parseInt(e.target.value, 10);
-                                    setQuantity(newQuantity >= 1 ? newQuantity : 1);
-                                }}
                                 required
+                                className="mx-2"
                             />
+                            <Button
+                                variant="outline-primary"
+                                onClick={() => setQuantity(quantity + 1)}
+                            >
+                                +
+                            </Button>
                         </Form.Group>
                         {isAuthenticated && !hasPurchased && (
                             <Button onClick={handleAddToCart} variant="primary">Agregar al Carrito <IoCart /></Button>
