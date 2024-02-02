@@ -98,7 +98,7 @@ html {
     color: #f8d120;
 }
 
-/* === Formulario eliminar producto ===*/
+/* === Formulario eliminar producto === */
 .eliminar-container img {
     width: 20%;
 }
@@ -110,6 +110,8 @@ html {
     justify-content: center;
     height: 100vh;
 }
+
+/* === Carrito === */
 
 .carrito-container {
     position: relative;
@@ -132,7 +134,50 @@ html {
     margin-left: 25%;
 }
 
-/* === Footer ===*/
+/* === Usuario === */
+.user-card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40vh;
+}
+
+.user-card {
+    width: 18rem;
+}
+
+.user-card .user-avatar {
+    width: 40px;
+    height: 30px;
+}
+
+.user-button-container {
+    margin-left: 38.5rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.user-button-container button {
+    margin-right: 20px;
+}
+
+.created-products-container {
+    margin-top: 5rem;
+    text-align: center;
+}
+
+.bought-products-container {
+    margin-top: 5rem;
+    text-align: center;
+}
+
+.sold-products-container {
+    margin-top: 5rem;
+    text-align: center;
+}
+
+/* === Footer === */
 .footer-container {
     background-color: #f8f9fa;
     padding: 20px 0;

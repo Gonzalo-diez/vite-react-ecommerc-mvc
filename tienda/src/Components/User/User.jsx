@@ -135,7 +135,7 @@ function User({ isAuthenticated, user, setUser }) {
       datasets: [{
         data,
         backgroundColor,
-        radius: 400,
+        radius: 300,
       }],
     };
   };  
@@ -162,7 +162,7 @@ function User({ isAuthenticated, user, setUser }) {
   
     return {
       labels: names,
-      datasets: [{ data: stock, backgroundColor, radius: 400 }],
+      datasets: [{ data: stock, backgroundColor, radius: 300 }],
     };
   };
   
@@ -180,29 +180,33 @@ function User({ isAuthenticated, user, setUser }) {
     <section>
       {isAuthenticated ? (
         <div>
-          <Card style={{ width: "18rem" }}>
-            <Card.Body>
-              <Card.Title>Bienvenido usuario</Card.Title>
-            </Card.Body>
-            <ListGroup className="list-group-flush">
-              <ListGroupItem>
-                <strong>Nombre:</strong> {user?.name || "No disponible"}
-              </ListGroupItem>
-              <ListGroupItem>
-                <strong>Apellido:</strong> {user?.surname || "No disponible"}
-              </ListGroupItem>
-              <ListGroupItem>
-                <strong>Avatar:</strong>
-                <img src={`${serverUrl}/${user?.avatar}`} alt="Avatar" />
-              </ListGroupItem>
-            </ListGroup>
-          </Card>
           <div>
-            <Button onClick={handlerEditarPerfil}>Editar Perfil</Button>
-            <Button onClick={handleCambiarPassword}>Cambiar Contraseña</Button>
+            <div className="user-card-container">
+              <Card className="user-card">
+                <Card.Body>
+                  <Card.Title>Bienvenido usuario</Card.Title>
+                </Card.Body>
+                <ListGroup className="list-group-flush">
+                  <ListGroupItem>
+                    <strong>Nombre:</strong> {user?.name || "No disponible"}
+                  </ListGroupItem>
+                  <ListGroupItem>
+                    <strong>Apellido:</strong> {user?.surname || "No disponible"}
+                  </ListGroupItem>
+                  <ListGroupItem>
+                    <strong>Avatar:</strong>
+                    <img src={`${serverUrl}/${user?.avatar}`} alt="Avatar" className="user-avatar" />
+                  </ListGroupItem>
+                </ListGroup>
+              </Card>
+            </div>
+            <div className="user-button-container">
+                <Button onClick={handlerEditarPerfil}>Editar Perfil</Button>
+                <Button onClick={handleCambiarPassword}>Cambiar Contraseña</Button>
+            </div>
           </div>
 
-          <div>
+          <div className="created-products-container">
             <h3>Productos Creados:</h3>
             {product && product.createdProducts && product.createdProducts.length > 0 ? (
               <div>
@@ -214,14 +218,14 @@ function User({ isAuthenticated, user, setUser }) {
             )}
           </div>
 
-          <div>
+          <div className="bought-products-container">
             <h3>Productos Comprados:</h3>
             {bought && bought.boughtProducts && bought.boughtProducts.length > 0 ? (
               <ul>
                 {bought.boughtProducts.map((boughtProd) => (
                   <li key={boughtProd._id}>
                     <strong>Título:</strong> {boughtProd.title}, <strong>Cantidad:</strong> {boughtProd.quantity}, <strong>Precio Total:</strong> {boughtProd.price}
-                    <Button onClick={() => navigate(`/productos/detalle/${boughtProd._id}`)}>Detalles</Button>
+                    <Button onClick={() => navigate(`/productos/detalle/${boughtProd.product}`)}>Detalles</Button>
                   </li>
                 ))}
               </ul>
@@ -230,7 +234,7 @@ function User({ isAuthenticated, user, setUser }) {
             )}
           </div>
 
-          <div>
+          <div className="sold-products-container">
             <h3>Productos Vendidos:</h3>
             {sold && sold.soldProducts && sold.soldProducts.length > 0 ? (
               <div>
