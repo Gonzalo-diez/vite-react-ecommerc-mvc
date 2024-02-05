@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../Context/AuthContext";
+import { useAuth } from "../Context/authContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Button, Card, ListGroup, ListGroupItem } from "react-bootstrap";

@@ -47,6 +47,10 @@ html {
     margin-right: 10px;
 }
 
+.card-inicio {
+    margin-left: 10px;
+}
+
 /* === About ===*/
 .logos-container {
     display: flex;
@@ -256,6 +260,17 @@ html {
 /* === Responsive 320px === */
 
 @media (max-width: 320px) {
+    /* === Home === */
+    .card-inicio {
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+
+    /* === Categoria === */
+    .card-categoria {
+        margin: auto;
+    }    
+
     /* === Usuario === */
     .user-button-container {
         margin-left: 2rem;
