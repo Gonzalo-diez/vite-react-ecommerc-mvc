@@ -129,22 +129,22 @@ function User({ isAuthenticated, user, setUser }) {
     }
 
     const radius = windowWidth < 768 ? 120 : 300;
-  
+
     const validProducts = products.filter(
       (soldProd) => soldProd && soldProd.product && soldProd.product.title && soldProd.price && soldProd.quantity
     );
-  
+
     if (validProducts.length === 0) {
       return { labels: [], datasets: [{ data: [] }] };
     }
-  
+
     const names = validProducts.map((soldProd) => soldProd.product.title);
     const totalPrices = validProducts.map((soldProd) => soldProd.price * soldProd.quantity);
-  
+
     const data = totalPrices;
-  
+
     const backgroundColor = Array.from({ length: data.length }, () => getRandomColor());
-  
+
     return {
       labels: names,
       datasets: [{
@@ -153,8 +153,8 @@ function User({ isAuthenticated, user, setUser }) {
         radius,
       }],
     };
-  };  
-  
+  };
+
   const soldOption = {
     plugins: {
       legend: {
@@ -168,20 +168,20 @@ function User({ isAuthenticated, user, setUser }) {
     if (!products || products.length === 0) {
       return { labels: [], datasets: [{ data: [] }] };
     }
-  
+
     const validProducts = products.filter((createdProd) => createdProd && createdProd.title && createdProd.stock);
     const names = validProducts.map((createdProd) => createdProd.title);
     const stock = validProducts.map((createdProd) => createdProd.stock);
 
     const radius = windowWidth < 768 ? 120 : 300;
     const backgroundColor = Array.from({ length: stock.length }, () => getRandomColor());
-  
+
     return {
       labels: names,
-      datasets: [{ data: stock, backgroundColor, radius,}],
+      datasets: [{ data: stock, backgroundColor, radius, }],
     };
   };
-  
+
 
   const createdOption = {
     plugins: {
@@ -216,9 +216,9 @@ function User({ isAuthenticated, user, setUser }) {
                 </ListGroup>
               </Card>
             </div>
-            <div className="user-button-container">
-                <Button onClick={handlerEditarPerfil}>Editar Perfil</Button>
-                <Button onClick={handleCambiarPassword}>Cambiar Contraseña</Button>
+            <div className="d-flex justify-content-center mt-3">
+              <Button onClick={handlerEditarPerfil}>Editar Perfil</Button>
+              <Button onClick={handleCambiarPassword}>Cambiar Contraseña</Button>
             </div>
           </div>
 

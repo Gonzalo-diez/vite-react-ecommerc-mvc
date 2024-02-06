@@ -166,17 +166,6 @@ html {
     height: 30px;
 }
 
-.user-button-container {
-    margin-left: 38.5rem;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-
-.user-button-container button {
-    margin-right: 20px;
-}
-
 .created-products-container {
     margin-top: 5rem;
     text-align: center;
@@ -230,33 +219,6 @@ html {
     }
 }
 
-/* === Responsive 768px === */
-
-@media (max-width: 768px) {
-    /* === Usuario === */
-    .user-button-container {
-        margin-left: 15rem;
-    }
-}
-
-/* === Responsive 425px === */
-
-@media (max-width: 425px) {
-    /* === Usuario === */
-    .user-button-container {
-        margin-left: 4rem;
-    }
-}
-
-/* === Responsive 375px === */
-
-@media (max-width: 375px) {
-    /* === Usuario === */
-    .user-button-container {
-        margin-left: 2.5rem;
-    }
-}
-
 /* === Responsive 320px === */
 
 @media (max-width: 320px) {
@@ -270,9 +232,4 @@ html {
     .card-categoria {
         margin: auto;
     }    
-
-    /* === Usuario === */
-    .user-button-container {
-        margin-left: 2rem;
-    }
 }

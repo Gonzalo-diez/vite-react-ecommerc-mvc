@@ -59,8 +59,8 @@ function EditarProducto({ isAuthenticated }) {
             formData.append("stock", stock);
             formData.append("category", category);
             for (let i = 0; i < images.length; i++) {
-                formData.append(`images${i + 1}`, images[i]);
-            }
+                formData.append("images", images[i]);
+            }     
             formData.append("userId", userId);
 
             const response = await axios.put(`http://localhost:8800/productos/protected/editar/${id}`, formData, {
@@ -78,7 +78,7 @@ function EditarProducto({ isAuthenticated }) {
     };
 
     const handleEditProductImage = (e) => {
-        setImages(e.target.files)
+        setImages(e.target.files || []);
     }
 
     return (
