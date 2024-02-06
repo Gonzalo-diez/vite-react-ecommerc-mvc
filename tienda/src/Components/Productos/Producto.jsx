@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { Card, Button, Form, Toast, ToastContainer, Row, Col, Pagination, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Card, Button, Form, Toast, ToastContainer, Row, Col, Pagination, OverlayTrigger, Tooltip, Carousel } from 'react-bootstrap';
 import { IoCart, IoStar, IoStarOutline, IoPencil, IoTrash } from "react-icons/io5";
 import { BiSolidCommentAdd } from "react-icons/bi";
 import { useAuth } from '../Context/authContext';
@@ -138,7 +138,17 @@ function Producto({ isAuthenticated, addToCart, user }) {
         <div className="producto-container">
             <div className="producto-details">
                 <Card key={product._id} className="text-center card-producto m-auto mt-4">
-                    <Card.Img variant="top" src={`${serverUrl}/${product.image}`} alt={product.title} />
+                    <Carousel variant="dark">
+                        {product.images.map((image, index) => (
+                            <Carousel.Item key={index}>
+                                <img
+                                    className="d-block w-100 img-fluid card-image"
+                                    src={`http://localhost:8800/${image}`}
+                                    alt={product.title}
+                                />
+                            </Carousel.Item>
+                        ))}
+                    </Carousel>
                     <Card.Body>
                         <Card.Title>{product.title}</Card.Title>
                         <Card.Text>marca: {product.brand}</Card.Text>

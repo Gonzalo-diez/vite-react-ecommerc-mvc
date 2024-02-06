@@ -24,8 +24,8 @@ productRoutes.get("/", ProductController.getAllproduct);
 productRoutes.get("/:category", ProductController.getproductByCategory);
 productRoutes.get("/detalle/:id", ProductController.getProductDetail);
 productRoutes.get("/comentarios/:id", ProductController.getCommentsByProduct);
-productRoutes.post("/protected/agregar", passport.authenticate('jwt', { session: false }), upload.single("image"), ProductController.addProduct);
-productRoutes.put("/protected/editar/:id", passport.authenticate('jwt', { session: false }), upload.single("image"), ProductController.updateProduct);
+productRoutes.post("/protected/agregar", passport.authenticate('jwt', { session: false }), upload.array("images"), ProductController.addProduct);
+productRoutes.put("/protected/editar/:id", passport.authenticate('jwt', { session: false }), upload.array("images"), ProductController.updateProduct);
 productRoutes.delete("/protected/borrar/:id", passport.authenticate('jwt', { session: false }), ProductController.deleteProduct);
 
 module.exports = productRoutes;

@@ -15,7 +15,7 @@ function EditarProducto({ isAuthenticated }) {
     const [price, setPrice] = useState("");
     const [stock, setStock] = useState("");
     const [category, setCategory] = useState("");
-    const [image, setImage] = useState("");
+    const [images, setImages] = useState(null);
 
     const token = localStorage.getItem("jwtToken");
 
@@ -36,7 +36,7 @@ function EditarProducto({ isAuthenticated }) {
                 setPrice(product.price);
                 setStock(product.stock);
                 setCategory(product.category);
-                setImage(product.image);
+                setImages(product.image);
             } catch (error) {
                 console.error("Error al obtener el producto:", error);
             }
@@ -58,7 +58,9 @@ function EditarProducto({ isAuthenticated }) {
             formData.append("price", price);
             formData.append("stock", stock);
             formData.append("category", category);
-            formData.append("image", image);
+            for (let i = 0; i < images.length; i++) {
+                formData.append(`images${i + 1}`, images[i]);
+            }
             formData.append("userId", userId);
 
             const response = await axios.put(`http://localhost:8800/productos/protected/editar/${id}`, formData, {
@@ -76,7 +78,7 @@ function EditarProducto({ isAuthenticated }) {
     };
 
     const handleEditProductImage = (e) => {
-        setImage(e.target.files[0])
+        setImages(e.target.files)
     }
 
     return (
@@ -140,6 +142,7 @@ function EditarProducto({ isAuthenticated }) {
                     <Form.Label>imagen:</Form.Label>
                     <Form.Control
                         type="file"
+                        multiple
                         onChange={handleEditProductImage}
                     />
                 </Form.Group>

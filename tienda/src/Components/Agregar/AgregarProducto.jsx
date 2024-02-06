@@ -11,7 +11,7 @@ function AgregarProductos({ isAuthenticated, user }) {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
-  const [image, setImage] = useState("");
+  const [images, setImages] = useState(null);
   const [category, setCategory] = useState("");
 
   const userId = user ? user._id : null;
@@ -32,7 +32,9 @@ function AgregarProductos({ isAuthenticated, user }) {
       formData.append("price", price);
       formData.append("stock", stock);
       formData.append("category", category);
-      formData.append("image", image);
+      for (let i = 0; i < images.length; i++) {
+        formData.append("images", images[i]);
+      }          
       formData.append("userId", userId);
 
       const response = await axios.post("http://localhost:8800/productos/protected/agregar", formData, {
@@ -51,8 +53,9 @@ function AgregarProductos({ isAuthenticated, user }) {
   };
 
   const handleSaveImage = (e) => {
-    setImage(e.target.files[0]);
+    setImages(e.target.files || []);
   }
+   
 
   return (
     <div className="agregar-container">
@@ -107,6 +110,7 @@ function AgregarProductos({ isAuthenticated, user }) {
           <Form.Label>Imagen:</Form.Label>
           <Form.Control
             type="file"
+            multiple
             onChange={handleSaveImage}
           />
         </Form.Group>

@@ -30,7 +30,7 @@ const CartController = {
 
       // Buscar venta activa existente
       let soldProduct = await SoldProduct.findOne({
-        seller: product.user, // Cambiado a 'seller' en lugar de 'user'
+        seller: product.user,
         product: productId,
         status: 'activo',
       });
@@ -45,7 +45,7 @@ const CartController = {
           // Crear un nuevo SoldProduct si no está activo
           soldProduct = new SoldProduct({
             user: userId,
-            seller: product.user, // Cambiado a 'seller' en lugar de 'user'
+            seller: product.user,
             product: productId,
             title: product.title,
             quantity: quantity,
@@ -57,7 +57,7 @@ const CartController = {
         // Crear una nueva venta solo si no existe una activa
         soldProduct = new SoldProduct({
           user: userId,
-          seller: product.user, // Cambiado a 'seller' en lugar de 'user'
+          seller: product.user,
           product: productId,
           title: product.title,
           quantity: quantity,

@@ -4,7 +4,6 @@ const config = require("../config/config");
 const passport = require("passport");
 const User = require("../models/user");
 const Product = require("../models/product");
-const Cart = require("../models/cart");
 const BoughtProduct = require("../models/boughtProduct");
 const SoldProduct = require("../models/soldProduct");
 

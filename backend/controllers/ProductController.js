@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const Comment = require("../models/comment")
 const Product = require("../models/product");
 const User = require("../models/user");
-const SoldProduct = require("../models/soldProduct");
 
 const ProductController = {
     getAllproduct: async (req, res, next) => {
@@ -72,10 +71,10 @@ const ProductController = {
                 return res.status(404).json({ error: 'Usuario no encontrado' });
             }
     
-            const imageName = req.file ? req.file.filename : null;
-    
-            if (!imageName) {
-                return res.status(400).json({ error: 'No se proporcionó una imagen válida' });
+            const images = req.files.map(file => file.filename);
+
+            if (!images || images.length === 0) {
+                return res.status(400).json({ error: 'No se proporcionaron imágenes válidas' });
             }
     
             const newProduct = new Product({
@@ -85,7 +84,7 @@ const ProductController = {
                 price,
                 stock,
                 category,
-                image: imageName,
+                images,
                 user: userId,
             });
     
@@ -126,10 +125,10 @@ const ProductController = {
                 return res.status(403).json({ error: "No tienes permisos para editar este producto" });
             }
 
-            const imageName = req.file ? req.file.filename : null;
+            const images = req.files.map(file => file.filename);
 
-            if (!imageName) {
-                return res.status(400).json({ error: 'No se proporcionó una imagen válida' });
+            if (!images || images.length === 0) {
+                return res.status(400).json({ error: 'No se proporcionaron imágenes válidas' });
             }
 
             const updatedProduct = await Product.findByIdAndUpdate(
@@ -141,7 +140,7 @@ const ProductController = {
                     price,
                     stock,
                     category,
-                    image: imageName,
+                    images,
                     user: userId,
                 },
                 { new: true }
