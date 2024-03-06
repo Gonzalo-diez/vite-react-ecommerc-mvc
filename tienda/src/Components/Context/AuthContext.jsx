@@ -7,14 +7,14 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const setAuthenticatedUserId = (id) => {
-      setUserId(id);
-      setIsAuthenticated(!!id); 
+    setUserId(id);
+    setIsAuthenticated(!!id);
   };
 
   return (
-      <AuthContext.Provider value={{ userId, setAuthenticatedUserId, isAuthenticated }}>
-          {children}
-      </AuthContext.Provider>
+    <AuthContext.Provider value={{ userId, setAuthenticatedUserId, isAuthenticated }}>
+      {children}
+    </AuthContext.Provider>
   );
 };
 

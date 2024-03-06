@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
-import "../css/App.css";
+import io from "socket.io-client";
 
-function AgregarProductos({ isAuthenticated, user }) {
+function AgregarProducto({ isAuthenticated, user }) {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [brand, setBrand] = useState("");
@@ -16,6 +16,7 @@ function AgregarProductos({ isAuthenticated, user }) {
 
   const userId = user ? user._id : null;
   const token = localStorage.getItem("jwtToken");
+  const socket = io("http://localhost:8800")
 
   const handleAgregar = async () => {
     if (!isAuthenticated) {
@@ -37,7 +38,7 @@ function AgregarProductos({ isAuthenticated, user }) {
       }          
       formData.append("userId", userId);
 
-      const response = await axios.post("http://localhost:8800/productos/protected/agregar", formData, {
+      const response = await axios.post("http://localhost:8800/productos/protected/agregarProducto", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
@@ -45,6 +46,7 @@ function AgregarProductos({ isAuthenticated, user }) {
       });
 
       console.log(response.data.message);
+      socket.emit("producto-agregado", response.data);
 
       navigate("/");
     } catch (error) {
@@ -129,4 +131,4 @@ function AgregarProductos({ isAuthenticated, user }) {
   );
 }
 
-export default AgregarProductos;
+export default AgregarProducto;

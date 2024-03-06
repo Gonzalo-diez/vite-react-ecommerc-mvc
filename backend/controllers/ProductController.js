@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Comment = require("../models/comment")
 const Product = require("../models/product");
 const User = require("../models/user");
+const { io } = require("../index");
 
 const ProductController = {
     getAllproduct: async (req, res, next) => {
@@ -161,9 +162,9 @@ const ProductController = {
         const productId = req.params.id;
 
         try {
-            const result = await Product.deleteOne({ _id: productId });
+            const deleteProduct = await Product.deleteOne({ _id: productId });
 
-            if (result.deletedCount === 0) {
+            if (deleteProduct.deletedCount === 0) {
                 return res.status(404).json({ error: "Producto no encontrado" });
             }
 

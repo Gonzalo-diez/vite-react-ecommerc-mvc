@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../Context/authContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Button, Card, ListGroup, ListGroupItem } from "react-bootstrap";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from "react-chartjs-2";
+import { useAuth } from "../Context/AuthContext";
 
 function User({ isAuthenticated, user, setUser }) {
   ChartJS.register(ArcElement, Tooltip, Legend);
@@ -217,8 +217,8 @@ function User({ isAuthenticated, user, setUser }) {
               </Card>
             </div>
             <div className="d-flex justify-content-center mt-3">
-              <Button onClick={handlerEditarPerfil}>Editar Perfil</Button>
-              <Button onClick={handleCambiarPassword}>Cambiar Contraseña</Button>
+              <Button onClick={handlerEditarPerfil} className="mx-2">Editar Perfil</Button>
+              <Button onClick={handleCambiarPassword} className="mx-2">Cambiar Contraseña</Button>
             </div>
           </div>
 

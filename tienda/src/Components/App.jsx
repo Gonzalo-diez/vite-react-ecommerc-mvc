@@ -5,19 +5,19 @@ import Home from './Home/Home';
 import Menu from './Menu/Menu';
 import Login from './Login/Login';
 import Registro from './Registro/Registro';
-import AgregarProductos from './Agregar/AgregarProducto';
-import BorrarProducto from './Borrar/BorrarProducto';
-import EditarProducto from './Editar/EditarProducto';
+import AgregarProducto from "./Productos/Agregar/AgregarProducto";
+import BorrarProducto from './Productos/Eliminar/BorrarProducto';
+import EditarProducto from './Productos/Editar/EditarProducto';
 import Carrito from './Carrito/Carrito';
 import ProductoCategoria from './Productos/Categoria/ProductoCategoria';
 import Producto from './Productos/Producto';
 import User from './User/User';
-import EditarPassword from './Editar/EditarPassword';
-import EditarPerfil from './Editar/EditarPerfil';
-import './css/App.css';
+import EditarPassword from './User/Editar/EditarPassword';
+import EditarPerfil from './User/Editar/EditarPerfil';
+import EditarComentario from './Productos/Comentarios/Editar/EditarComentario';
+import BorrarComentario from './Productos/Comentarios/Eliminar/BorrarComentario';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import EditarComentario from './Editar/EditarComentario';
-import BorrarComentario from './Borrar/BorrarComentario';
+import './css/App.css';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -53,9 +53,9 @@ function App() {
           <Route path="/comentarios/protected/borrar/:id" element={<BorrarComentario />} />
           <Route path="/productos/detalle/:id" element={<Producto isAuthenticated={isAuthenticated} addToCart={addToCart} user={user} />} />
           <Route path="/productos/:category" element={<ProductoCategoria />} />
-          <Route path="/productos/protected/agregar" element={<AgregarProductos isAuthenticated={isAuthenticated} user={user} />} />
-          <Route path="/productos/protected/borrar/:id" element={<BorrarProducto isAuthenticated={isAuthenticated} />} />
-          <Route path="/productos/protected/editar/:id" element={<EditarProducto isAuthenticated={isAuthenticated} />} />
+          <Route path="/productos/protected/agregarProducto" element={<AgregarProducto isAuthenticated={isAuthenticated} user={user} />} />
+          <Route path="/productos/protected/borrarProducto/:id" element={<BorrarProducto isAuthenticated={isAuthenticated} />} />
+          <Route path="/productos/protected/editarProducto/:id" element={<EditarProducto isAuthenticated={isAuthenticated} />} />
           <Route path="/carrito/protected/comprar" element={<Carrito cart={cart} removeFromCart={removeFromCart} isAuthenticated={isAuthenticated} user={user} />} />
         </Routes>
       </Layout>

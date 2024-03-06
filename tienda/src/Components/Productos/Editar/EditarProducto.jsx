@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
-import "../css/App.css";
-import { useAuth } from '../Context/authContext';
+import io from "socket.io-client";
+import { useAuth } from "../../Context/authContext";
 
 function EditarProducto({ isAuthenticated }) {
     const { id } = useParams();
@@ -18,6 +18,7 @@ function EditarProducto({ isAuthenticated }) {
     const [images, setImages] = useState(null);
 
     const token = localStorage.getItem("jwtToken");
+    const socket = io("http://localhost:8800");
 
     useEffect(() => {
         const fetchProducto = async () => {
@@ -63,7 +64,7 @@ function EditarProducto({ isAuthenticated }) {
             }     
             formData.append("userId", userId);
 
-            const response = await axios.put(`http://localhost:8800/productos/protected/editar/${id}`, formData, {
+            const response = await axios.put(`http://localhost:8800/productos/protected/editarProducto/${id}`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "multipart/form-data",
@@ -71,6 +72,8 @@ function EditarProducto({ isAuthenticated }) {
             });
 
             console.log(response.data);
+            socket.emit("producto-editado", response.data);
+
             navigate("/");
         } catch (error) {
             console.error("Error en la actualización:", error);

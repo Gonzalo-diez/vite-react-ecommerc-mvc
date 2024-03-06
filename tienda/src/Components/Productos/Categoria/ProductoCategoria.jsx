@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Card, Button, Pagination, Carousel } from 'react-bootstrap';
-import "../../css/App.css";
 
 function ProductoCategoria() {
     const navigate = useNavigate();

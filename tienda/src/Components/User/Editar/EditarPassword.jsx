@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import axios from 'axios';
-import { useAuth } from '../Context/authContext';
+import { useAuth } from '../../Context/authContext';
 import { useNavigate } from 'react-router-dom';
 
 const EditarPassword = () => {
@@ -9,7 +9,7 @@ const EditarPassword = () => {
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [passwordsMatch, setPasswordsMatch] = useState(true); // Nuevo estado para validar la coincidencia de contraseñas
+    const [passwordsMatch, setPasswordsMatch] = useState(true);
     const navigate = useNavigate();
 
     const handleSavePassword = async () => {
@@ -44,7 +44,7 @@ const EditarPassword = () => {
             <Row className="justify-content-md-center">
                 <Col xs={12} md={6}>
                     <h2 className="text-center mt-3 mb-4">Cambiar Contraseña</h2>
-                    {!passwordsMatch && ( // Mostrar mensaje de error si las contraseñas no coinciden
+                    {!passwordsMatch && (
                         <p className="text-danger">Las contraseñas no coinciden. Por favor, inténtalo de nuevo.</p>
                     )}
                     <Form>

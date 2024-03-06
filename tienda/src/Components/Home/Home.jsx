@@ -28,14 +28,14 @@ function Home({ isAuthenticated }) {
 
   const handleEliminarProducto = async (productId) => {
     try {
-      navigate(`/productos/protected/borrar/${productId}`);
+      navigate(`/productos/protected/borrarProducto/${productId}`);
     } catch (err) {
       console.log(err);
     }
   };
 
   const handleAgregarProducto = () => {
-    navigate('/productos/protected/agregar');
+    navigate('/productos/protected/agregarProducto');
   };
 
   return (
@@ -99,7 +99,7 @@ function Home({ isAuthenticated }) {
                     <Button variant="primary" onClick={() => navigate(`/productos/detalle/${product._id}`)}>Ver más</Button>
                     {isAuthenticated && userId && userId === product.user._id && (
                       <div className="inicio-link-container">
-                        <Button variant="warning" onClick={() => navigate(`/productos/protected/editar/${product._id}`)}><IoPencil /></Button>
+                        <Button variant="warning" onClick={() => navigate(`/productos/protected/editarProducto/${product._id}`)}><IoPencil /></Button>
                         <Button variant="danger" onClick={() => handleEliminarProducto(product._id)}><IoTrash /></Button>
                       </div>
                     )}

@@ -115,9 +115,9 @@ const CommentController = {
         const commentId = req.params.id;
 
         try {
-            const result = await Comment.deleteOne({ _id: commentId });
+            const deleteComment = await Comment.deleteOne({ _id: commentId });
 
-            if (result.deletedCount === 0) {
+            if (deleteComment.deletedCount === 0) {
                 return res.status(404).json({ error: 'Comentario no encontrado' });
             }
 

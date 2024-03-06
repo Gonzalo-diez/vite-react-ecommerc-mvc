@@ -11,7 +11,12 @@ const configurePassport = require("./config/passport");
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIO(server);
+const io = socketIO(server, {
+    cors: {
+        origin: "http://localhost:5173", 
+        methods: ["GET", "POST", "PUT", "DELETE"] 
+    }
+});
 
 const routes = require("./routes");
 
@@ -31,7 +36,10 @@ db.once("open", () => {
 });
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+})); 
 app.use(
     session({
         secret: "your-secret-key",
@@ -48,16 +56,42 @@ app.use("/", routes);
 app.use(express.static(path.join(__dirname, 'uploads')));
 app.use(express.static(path.join(__dirname, 'avatar')));
 
-io.on("connection", (socket) => {
-    console.log("Nuevo cliente se ha conectado");
-
-    socket.on("disconnect", () => {
-        console.log("Cliente desconectado");
-    })
-})
-
 const PORT = 8800
 
 server.listen(PORT, () => {
-    console.log(`Servidor y WebSocket conectados en el puerto ${PORT}`);
+    console.log(`Servidor en el puerto ${PORT}`);
 });
+
+io.on("connection", (socket) => {
+    console.log("Nuevo cliente conectado");
+
+    socket.on("comentario-eliminado", (deletedCommentId) => {
+        console.log("Comentario eliminado:", deletedCommentId);
+        io.emit("comentario-eliminado", deletedCommentId);
+    });
+
+    socket.on("comentario-agregado", (newComment) => {
+        console.log("Comentario agregado:", newComment);
+        io.emit("comentario-agregado", newComment);
+    });
+
+    socket.on("comentario-editado", (updatedComment) => {
+        console.log("Comentario editado:", updatedComment);
+        io.emit("comentario-editado", updatedComment);
+    });
+
+    socket.on("producto-eliminado", (deleteBlogId) => {
+        console.log("Producto eliminado:", deleteBlogId);
+        io.emit("producto-eliminado", deleteBlogId);
+    });
+
+    socket.on("producto-editado", (updatedBlog) => {
+        console.log("Producto editado:", updatedBlog);
+        io.emit("producto-editado", updatedBlog);
+    });
+
+    socket.on("producto-agregado", (newBlog) => {
+        console.log("Producto agregado:", newBlog);
+        io.emit("producto-agregado", newBlog);
+    });
+})

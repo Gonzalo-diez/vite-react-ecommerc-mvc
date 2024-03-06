@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import axios from 'axios';
-import { useAuth } from '../Context/authContext';
+import { useAuth } from '../../../Context/authContext';
 import { useNavigate, useParams } from 'react-router-dom';
+import io from "socket.io-client";
 
 const EditarComentario = () => {
     const { id } = useParams();
@@ -12,6 +13,7 @@ const EditarComentario = () => {
     const [rating, setRating] = useState('');
 
     const token = localStorage.getItem("jwtToken");
+    const socket = io("http://localhost:8800");
 
     useEffect(() => {
         const fetchComentario = async () => {
@@ -49,7 +51,7 @@ const EditarComentario = () => {
             };
 
             const response = await axios.put(
-                `http://localhost:8800/comentarios/protected/editar/${id}`,
+                `http://localhost:8800/comentarios/protected/editarComentario/${id}`,
                 comentarioData,
                 {
                     headers: {
@@ -62,6 +64,9 @@ const EditarComentario = () => {
             console.log('Datos a enviar', response.data);
             setNewComment('');
             setRating('');
+            socket.emit("comentario-editado", response.data);
+
+
             navigate("/")
         } catch (error) {
             console.error('Error al actualizar el comentario:', error);

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Button, Form, Toast, ToastContainer } from 'react-bootstrap';
 import '../css/App.css';
-import { useAuth } from '../Context/AuthContext';
+import { useAuth } from '../Context/authContext';
 import { useNavigate } from 'react-router-dom';
 
 const Carrito = ({ cart, removeFromCart, isAuthenticated, user }) => {

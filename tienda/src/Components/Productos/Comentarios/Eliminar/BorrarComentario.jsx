@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Container, Button } from "react-bootstrap";
+import io from "socket.io-client";
 
 function BorrarComentario({ isAuthenticated }) {
     const [comment, setComment] = useState(null);
     const { id } = useParams();
     const navigate = useNavigate();
+
+    const socket = io("http://localhost:8800")
 
     useEffect(() => {
         const fetchProducto = async () => {
@@ -29,11 +32,14 @@ function BorrarComentario({ isAuthenticated }) {
         try {
             const token = localStorage.getItem("jwtToken");
 
-            await axios.delete(`http://localhost:8800/comentarios/protected/borrar/${id}`, {
+            const response = await axios.delete(`http://localhost:8800/comentarios/protected/borrarComentario/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
             });
+
+            socket.emit("comentario-eliminado", response.data);
+
             navigate("/", { replace: true });
         } catch (error) {
             console.error("Error al eliminar producto:", error);
