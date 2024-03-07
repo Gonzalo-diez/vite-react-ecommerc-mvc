@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Card, Button, Form, Toast, ToastContainer, Carousel } from 'react-bootstrap';
-import { IoCart, IoPencil, IoTrash } from "react-icons/io5";
+import { IoCart } from "react-icons/io5";
 import Comentario from "./Comentarios/Comentario";
 import AgregarComentario from "./Comentarios/Agregar/AgregarComentario";
+import { useAuth } from "../Context/authContext";
+import io from "socket.io-client";
 
 function Producto({ isAuthenticated, addToCart, user }) {
-    const navigate = useNavigate();
     const { userId } = useAuth();
     const { id } = useParams();
     const [product, setProduct] = useState(null);
@@ -15,6 +16,7 @@ function Producto({ isAuthenticated, addToCart, user }) {
     const [showToast, setShowToast] = useState(false);
     const [hasPurchased, setHasPurchased] = useState(false);
 
+    const socket = io("http://localhost:8800")
     const serverUrl = "http://localhost:8800";
     const token = localStorage.getItem("jwtToken");
 
@@ -36,6 +38,22 @@ function Producto({ isAuthenticated, addToCart, user }) {
                 console.log(err);
             }
         };
+
+        socket.on("producto-agregado", (productoAgregado) => {
+            console.log("Producto agregado:", productoAgregado);
+            setProduct((prevProduct) => [...prevProduct, productoAgregado]);
+        });
+
+        socket.on("producto-editado", (productoEditado) => {
+            console.log("Producto editado:", productoEditado);
+            setProduct((prevProduct) => [...prevProduct, productoEditado]);
+        });
+
+        socket.on("producto-eliminado", (productoEliminado) => {
+            console.log("Producto eliminado:", productoEliminado);
+            setProduct((prevProduct) => [...prevProduct, productoEliminado]);
+        });
+
         fetchProducto();
     }, [id, isAuthenticated, user]);
 
@@ -118,8 +136,8 @@ function Producto({ isAuthenticated, addToCart, user }) {
                     </Toast>
                 </ToastContainer>
             </div>
-            <Comentario isAuthenticated={isAuthenticated} userId={userId} />
-            <AgregarComentario isAuthenticated={isAuthenticated} userId={userId} />
+            <Comentario isAuthenticated={isAuthenticated} userId={userId} token={token} />
+            <AgregarComentario isAuthenticated={isAuthenticated} userId={userId} user={user} />
         </div>
     );
 }

@@ -75,7 +75,6 @@ function User({ isAuthenticated, user, setUser }) {
         });
         if (boughtRes.data) {
           setBought(boughtRes.data);
-          console.log(boughtRes.data)
         } else {
           console.error("La respuesta del servidor no tiene la estructura esperada:", boughtRes.data);
         }
@@ -94,7 +93,6 @@ function User({ isAuthenticated, user, setUser }) {
         });
         if (soldRes.data) {
           setSold(soldRes.data);
-          console.log(soldRes.data);
         } else {
           console.error("La respuesta del servidor no tiene la estructura esperada:", soldRes.data);
         }

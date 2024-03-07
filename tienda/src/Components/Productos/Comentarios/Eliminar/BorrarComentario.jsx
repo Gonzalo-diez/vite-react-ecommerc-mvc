@@ -9,7 +9,10 @@ function BorrarComentario({ isAuthenticated }) {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const socket = io("http://localhost:8800")
+    const token = localStorage.getItem("jwtToken");
+    const socket = io("http://localhost:8800");
+
+    console.log(token);
 
     useEffect(() => {
         const fetchProducto = async () => {
@@ -25,20 +28,18 @@ function BorrarComentario({ isAuthenticated }) {
 
     const handleEliminar = async () => {
         if (!isAuthenticated) {
-            console.log("Debes estar autenticado para eliminar productos.");
-            navigate("/login");
+            console.log("Debes estar autenticado para eliminar comentarios.");
+            navigate("/usuarios/login");
             return;
         }
         try {
-            const token = localStorage.getItem("jwtToken");
-
-            const response = await axios.delete(`http://localhost:8800/comentarios/protected/borrarComentario/${id}`, {
+            await axios.delete(`http://localhost:8800/comentarios/protected/borrarComentario/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
             });
 
-            socket.emit("comentario-eliminado", response.data);
+            socket.emit("comentario-eliminado", id);
 
             navigate("/", { replace: true });
         } catch (error) {
@@ -54,7 +55,7 @@ function BorrarComentario({ isAuthenticated }) {
         <Container className="text-center">
             <h2>Eliminar Comentario</h2>
             <p>¿Estás seguro de que deseas eliminar este comentario?</p>
-            {producto && (
+            {comment && (
                 <div className="eliminar-container">
                     <h2>{comment.name}</h2>
                     <p>{comment.description}</p>

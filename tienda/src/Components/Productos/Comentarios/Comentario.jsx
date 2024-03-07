@@ -1,32 +1,45 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Pagination, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { useNavigate, useParams } from "react-router-dom";
+import { Row, Col, OverlayTrigger, Tooltip, Button } from 'react-bootstrap';
 import { IoPencil, IoTrash, IoStar } from "react-icons/io5";
 import axios from "axios";
+import io from "socket.io-client";
+import moment from "moment";
 
 function Comentario({ isAuthenticated, userId }) {
+    const navigate = useNavigate();
     const [comments, setComments] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const COMMENTS_PER_PAGE = 3;
-    const startIndex = (currentPage - 1) * COMMENTS_PER_PAGE;
-    const endIndex = startIndex + COMMENTS_PER_PAGE;
-    const displayedComments = comments.slice(startIndex, endIndex);
+    const { id } = useParams();
+
+    const socket = io("http://localhost:8800");
+    const serverUrl = "http://localhost:8800";
 
     useEffect(() => {
         const fetchComments = async () => {
             try {
                 const comentariosRes = await axios.get(`${serverUrl}/productos/comentarios/${id}`);
-                console.log('Comentarios obtenidos:', comentariosRes.data);
                 setComments(comentariosRes.data);
             } catch (err) {
                 console.log(err);
             }
         };
-        fetchComments();
-    }, []);
 
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-    };
+        socket.on("comentario-agregado", (comentarioAgregado) => {
+            if (!comments.some(comment => comment._id === comentarioAgregado._id)) {
+                setComments(prevComments => [...prevComments, comentarioAgregado]);
+            }
+        });
+        
+        socket.on("comentario-editado", (comentarioEditado) => {
+            setComments(prevComments => [...prevComments, comentarioEditado]);
+        });
+        
+        socket.on("comentario-eliminado", (comentarioEliminadoId) => {
+            setComments(prevComments => prevComments.filter(comment => comment._id !== comentarioEliminadoId));
+        });
+        
+        fetchComments();
+    }, [id]);
 
     const handleEliminarComentario = async (id) => {
         try {
@@ -48,18 +61,18 @@ function Comentario({ isAuthenticated, userId }) {
                             <p>Sin comentarios</p>
                         ) : (
                             <div className="comentarios-list">
-                                {displayedComments.map((comment) => (
-                                    <div key={comment._id} className="comentario">
+                                {comments.map((comment, index) => (
+                                    <div key={comment._id || index} className="comentario">
                                         {comment.name && (
                                             <p>
-                                                <strong>{comment.name}:</strong>
+                                                <strong key={`text-${comment._id}-${index}`}>{comment.name}:</strong>
                                             </p>
                                         )}
                                         <p>{comment.text}</p>
                                         <p>
                                             <OverlayTrigger
                                                 placement="bottom"
-                                                overlay={<Tooltip id={`tooltip-rating-${comment._id}`}>{`Rating: ${comment.rating}`}</Tooltip>}
+                                                overlay={<Tooltip id={`tooltip-rating-${comment._id}-${index}`}>{`Rating: ${comment.rating}`}</Tooltip>}
                                             >
                                                 <span className="rating-stars">
                                                     {Array.from({ length: comment.rating }, (_, i) => (
@@ -68,7 +81,7 @@ function Comentario({ isAuthenticated, userId }) {
                                                 </span>
                                             </OverlayTrigger>
                                         </p>
-                                        <p>Fecha: {new Date(comment.date).toLocaleString()}</p>
+                                        <p key={`date-${comment._id}-${index}`}>Fecha: {moment(comment.date).format('lll')}</p>
                                         {isAuthenticated && userId && userId === comment.user && (
                                             <div className="inicio-link-container">
                                                 <Button variant="warning" onClick={() => navigate(`/comentarios/protected/editarComentario/${comment._id}`)}>
@@ -85,21 +98,6 @@ function Comentario({ isAuthenticated, userId }) {
                         )}
                     </Col>
                 </Row>
-            )}
-            {comments.length > COMMENTS_PER_PAGE && (
-                <div className="pagination-container">
-                    <Pagination className="mt-3">
-                        {Array.from({ length: Math.ceil(comments.length / COMMENTS_PER_PAGE) }, (_, i) => (
-                            <Pagination.Item
-                                key={i + 1}
-                                active={i + 1 === currentPage}
-                                onClick={() => handlePageChange(i + 1)}
-                            >
-                                {i + 1}
-                            </Pagination.Item>
-                        ))}
-                    </Pagination>
-                </div>
             )}
         </div>
     );

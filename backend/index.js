@@ -65,33 +65,27 @@ server.listen(PORT, () => {
 io.on("connection", (socket) => {
     console.log("Nuevo cliente conectado");
 
-    socket.on("comentario-eliminado", (deletedCommentId) => {
-        console.log("Comentario eliminado:", deletedCommentId);
-        io.emit("comentario-eliminado", deletedCommentId);
+    socket.on("comentario-eliminado", (comentarioEliminado) => {
+        io.emit("comentario-eliminado", comentarioEliminado);
     });
 
-    socket.on("comentario-agregado", (newComment) => {
-        console.log("Comentario agregado:", newComment);
-        io.emit("comentario-agregado", newComment);
+    socket.on("comentario-agregado", (comentarioAgregado) => {
+        io.emit("comentario-agregado", comentarioAgregado);
     });
 
-    socket.on("comentario-editado", (updatedComment) => {
-        console.log("Comentario editado:", updatedComment);
-        io.emit("comentario-editado", updatedComment);
+    socket.on("comentario-editado", (comentarioEditado) => {
+        io.emit("comentario-editado", comentarioEditado);
     });
 
-    socket.on("producto-eliminado", (deleteBlogId) => {
-        console.log("Producto eliminado:", deleteBlogId);
-        io.emit("producto-eliminado", deleteBlogId);
+    socket.on("producto-eliminado", (productoEliminado) => {
+        io.emit("producto-eliminado", productoEliminado);
     });
 
-    socket.on("producto-editado", (updatedBlog) => {
-        console.log("Producto editado:", updatedBlog);
-        io.emit("producto-editado", updatedBlog);
+    socket.on("producto-editado", (productoEditado) => {
+        io.emit("producto-editado", productoEditado);
     });
 
-    socket.on("producto-agregado", (newBlog) => {
-        console.log("Producto agregado:", newBlog);
-        io.emit("producto-agregado", newBlog);
+    socket.on("producto-agregado", (productoAgregado) => {
+        io.emit("producto-agregado", productoAgregado);
     });
 })

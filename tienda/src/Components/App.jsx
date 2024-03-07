@@ -49,8 +49,8 @@ function App() {
           <Route path="/usuarios/protected/:userId" element={<User isAuthenticated={isAuthenticated} user={user} setUser={setUser} />} />
           <Route path="/usuarios/protected/editarPerfil/:id" element={<EditarPerfil />} />
           <Route path="/usuarios/protected/cambiarContrasena/:userId" element={<EditarPassword />} />
-          <Route path="/comentarios/protected/editar/:id" element={<EditarComentario />} />
-          <Route path="/comentarios/protected/borrar/:id" element={<BorrarComentario />} />
+          <Route path="/comentarios/protected/editarComentario/:id" element={<EditarComentario />} />
+          <Route path="/comentarios/protected/borrarComentario/:id" element={<BorrarComentario isAuthenticated={isAuthenticated} />} />
           <Route path="/productos/detalle/:id" element={<Producto isAuthenticated={isAuthenticated} addToCart={addToCart} user={user} />} />
           <Route path="/productos/:category" element={<ProductoCategoria />} />
           <Route path="/productos/protected/agregarProducto" element={<AgregarProducto isAuthenticated={isAuthenticated} user={user} />} />
