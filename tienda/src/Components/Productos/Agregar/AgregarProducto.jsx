@@ -21,7 +21,7 @@ function AgregarProducto({ isAuthenticated, user }) {
   const handleAgregar = async () => {
     if (!isAuthenticated) {
       console.log("Debes estar autenticado para agregar productos.");
-      navigate("/login");
+      navigate("/usuarios/login");
       return;
     }
 

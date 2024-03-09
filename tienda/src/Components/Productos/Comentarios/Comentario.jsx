@@ -23,23 +23,36 @@ function Comentario({ isAuthenticated, userId }) {
                 console.log(err);
             }
         };
+        
+        fetchComments();
 
+        return () => {
+            socket.off("comentario-agregado");
+            socket.off("comentario-editado");
+            socket.off("comentario-eliminado");
+        };
+    }, [id]);
+
+    useEffect(() => {
         socket.on("comentario-agregado", (comentarioAgregado) => {
-            if (!comments.some(comment => comment._id === comentarioAgregado._id)) {
-                setComments(prevComments => [...prevComments, comentarioAgregado]);
-            }
+            setComments((prevComments) => [...prevComments, comentarioAgregado]);
+
         });
         
         socket.on("comentario-editado", (comentarioEditado) => {
-            setComments(prevComments => [...prevComments, comentarioEditado]);
+            setComments((prevComments) => [...prevComments, comentarioEditado]);
         });
         
         socket.on("comentario-eliminado", (comentarioEliminadoId) => {
-            setComments(prevComments => prevComments.filter(comment => comment._id !== comentarioEliminadoId));
+            setComments((prevComments) => prevComments.filter(comment => comment._id !== comentarioEliminadoId));
         });
-        
-        fetchComments();
-    }, [id]);
+
+        return () => {
+            socket.off("comentario-agregado");
+            socket.off("comentario-editado");
+            socket.off("comentario-eliminado");
+        };
+    }, [])
 
     const handleEliminarComentario = async (id) => {
         try {

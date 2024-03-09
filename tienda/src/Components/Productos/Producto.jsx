@@ -40,21 +40,24 @@ function Producto({ isAuthenticated, addToCart, user }) {
         };
 
         socket.on("producto-agregado", (productoAgregado) => {
-            console.log("Producto agregado:", productoAgregado);
             setProduct((prevProduct) => [...prevProduct, productoAgregado]);
         });
 
         socket.on("producto-editado", (productoEditado) => {
-            console.log("Producto editado:", productoEditado);
             setProduct((prevProduct) => [...prevProduct, productoEditado]);
         });
 
         socket.on("producto-eliminado", (productoEliminado) => {
-            console.log("Producto eliminado:", productoEliminado);
-            setProduct((prevProduct) => [...prevProduct, productoEliminado]);
+            setProduct(prevProducts => prevProducts.filter(p => p._id !== productoEliminado));
         });
 
         fetchProducto();
+
+        return () => {
+            socket.off("producto-agregado");
+            socket.off("producto-editado");
+            socket.off("producto-eliminado");
+        };
     }, [id, isAuthenticated, user]);
 
     const handleAddToCart = () => {
@@ -64,7 +67,7 @@ function Producto({ isAuthenticated, addToCart, user }) {
     };
 
     if (!product) {
-        return <p>No hay productos de esta categoría</p>;
+        return <p className="text-center">Producto no encontrado. Puede estar fuera de stock o ha sido eliminado.</p>;
     }
 
     return (

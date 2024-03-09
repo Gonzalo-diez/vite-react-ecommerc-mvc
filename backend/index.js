@@ -78,6 +78,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("producto-eliminado", (productoEliminado) => {
+        console.log("Producto eliminado:", productoEliminado);
         io.emit("producto-eliminado", productoEliminado);
     });
 

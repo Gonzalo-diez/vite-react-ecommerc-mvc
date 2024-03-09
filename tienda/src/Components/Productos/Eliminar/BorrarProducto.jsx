@@ -5,7 +5,7 @@ import { Container, Button } from "react-bootstrap";
 import io from "socket.io-client";
 
 function BorrarProducto({ isAuthenticated }) {
-    const [producto, setProducto] = useState(null);
+    const [product, setProduct] = useState(null);
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -15,7 +15,7 @@ function BorrarProducto({ isAuthenticated }) {
         const fetchProducto = async () => {
             try {
                 const datosProducto = await axios.get(`http://localhost:8800/productos/detalle/${id}`);
-                setProducto(datosProducto.data);
+                setProduct(datosProducto.data);
             } catch (error) {
                 console.error("Error al obtener el producto:", error);
             }
@@ -26,19 +26,19 @@ function BorrarProducto({ isAuthenticated }) {
     const handleEliminar = async () => {
         if (!isAuthenticated) {
             console.log("Debes estar autenticado para eliminar productos.");
-            navigate("/login");
+            navigate("/usuarios/login");
             return;
         }
         try {
             const token = localStorage.getItem("jwtToken");
 
-            await axios.delete(`http://localhost:8800/productos/protected/borrarProducto/${id}`, {
+            const response = await axios.delete(`http://localhost:8800/productos/protected/borrarProducto/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
             });
 
-            socket.emit("producto-eliminado", id);
+            socket.emit("producto-eliminado", response);
 
             navigate("/", { replace: true });
         } catch (error) {
@@ -54,10 +54,10 @@ function BorrarProducto({ isAuthenticated }) {
         <Container className="text-center">
             <h2>Eliminar Producto</h2>
             <p>¿Estás seguro de que deseas eliminar este producto?</p>
-            {producto && (
+            {product && (
                 <div className="eliminar-container">
-                    <h2>{producto.nombre}</h2>
-                    <img src={producto.imagen_url} alt={producto.nombre} />
+                    <h2>{product.title}</h2>
+                    <img src={`http://localhost:8800/${product.images}`} alt={product.title} />
                 </div>
             )}
             <Button variant="danger" onClick={handleEliminar} className="m-2">Sí, eliminar</Button>
