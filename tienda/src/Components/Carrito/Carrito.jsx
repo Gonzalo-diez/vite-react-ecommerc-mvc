@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Button, Form, Toast, ToastContainer } from 'react-bootstrap';
-import '../css/App.css';
 import { useAuth } from '../Context/authContext';
 import { useNavigate } from 'react-router-dom';
+import io from "socket.io-client";
 
 const Carrito = ({ cart, removeFromCart, isAuthenticated, user }) => {
   const [showCompraForm, setShowCompraForm] = useState(false);
@@ -19,9 +19,14 @@ const Carrito = ({ cart, removeFromCart, isAuthenticated, user }) => {
   const [showEmptyCartToast, setShowEmptyCartToast] = useState(false);
   const navigate = useNavigate();
 
+  const socket = io("http://localhost:8800")
   const token = localStorage.getItem("jwtToken");
 
   const handleCompra = async () => {
+    if (!isAuthenticated) {
+      navigate("/usuarios/login");
+    }
+
     if (cart.length === 0) {
       setShowEmptyCartToast(true);
       return;
@@ -53,6 +58,8 @@ const Carrito = ({ cart, removeFromCart, isAuthenticated, user }) => {
           },
         });
         console.log(response.data);
+        socket.emit("producto-comprado", response.data);
+        socket.emit("producto-vendido", response.data);
         removeFromCart(productId);
         setShowToast(true);
         navigate("/")

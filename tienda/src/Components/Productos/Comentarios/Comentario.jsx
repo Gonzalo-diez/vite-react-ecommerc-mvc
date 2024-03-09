@@ -5,6 +5,7 @@ import { IoPencil, IoTrash, IoStar } from "react-icons/io5";
 import axios from "axios";
 import io from "socket.io-client";
 import moment from "moment";
+import StarRating from "../StarRating";
 
 function Comentario({ isAuthenticated, userId }) {
     const navigate = useNavigate();
@@ -15,6 +16,7 @@ function Comentario({ isAuthenticated, userId }) {
     const serverUrl = "http://localhost:8800";
 
     useEffect(() => {
+        socket.connect();
         const fetchComments = async () => {
             try {
                 const comentariosRes = await axios.get(`${serverUrl}/productos/comentarios/${id}`);
@@ -23,26 +25,28 @@ function Comentario({ isAuthenticated, userId }) {
                 console.log(err);
             }
         };
-        
+
         fetchComments();
 
         return () => {
             socket.off("comentario-agregado");
             socket.off("comentario-editado");
             socket.off("comentario-eliminado");
+            socket.disconnect();
         };
     }, [id]);
 
     useEffect(() => {
+        socket.connect();
+
         socket.on("comentario-agregado", (comentarioAgregado) => {
             setComments((prevComments) => [...prevComments, comentarioAgregado]);
-
         });
-        
+
         socket.on("comentario-editado", (comentarioEditado) => {
             setComments((prevComments) => [...prevComments, comentarioEditado]);
         });
-        
+
         socket.on("comentario-eliminado", (comentarioEliminadoId) => {
             setComments((prevComments) => prevComments.filter(comment => comment._id !== comentarioEliminadoId));
         });
@@ -51,8 +55,18 @@ function Comentario({ isAuthenticated, userId }) {
             socket.off("comentario-agregado");
             socket.off("comentario-editado");
             socket.off("comentario-eliminado");
+            socket.disconnect();
         };
-    }, [])
+    }, []);
+
+    const calculateAverageRating = () => {
+        if (comments.length === 0) {
+            return 0;
+        }
+
+        const totalRating = comments.reduce((sum, comment) => sum + comment.rating, 0);
+        return totalRating / comments.length;
+    };
 
     const handleEliminarComentario = async (id) => {
         try {
@@ -69,11 +83,19 @@ function Comentario({ isAuthenticated, userId }) {
                 <p>Sin comentarios</p>
             ) : (
                 <Row>
+                    <Col md={3} className="mt-3">
+                        {comments.length > 0 && (
+                            <div className="average-rating">
+                                <h4>Promedio de Ratings</h4>
+                                <StarRating averageRating={calculateAverageRating()} />
+                            </div>
+                        )}
+                    </Col>
                     <Col md={9}>
                         {comments.length === 0 ? (
                             <p>Sin comentarios</p>
                         ) : (
-                            <div className="comentarios-list">
+                            <div className="comentarios-list mt-3">
                                 {comments.map((comment, index) => (
                                     <div key={comment._id || index} className="comentario">
                                         {comment.name && (

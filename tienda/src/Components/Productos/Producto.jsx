@@ -8,7 +8,7 @@ import AgregarComentario from "./Comentarios/Agregar/AgregarComentario";
 import { useAuth } from "../Context/authContext";
 import io from "socket.io-client";
 
-function Producto({ isAuthenticated, addToCart, user }) {
+function Producto({ isAuthenticated, addToCart, user, setCart }) {
     const { userId } = useAuth();
     const { id } = useParams();
     const [product, setProduct] = useState(null);
@@ -16,12 +16,13 @@ function Producto({ isAuthenticated, addToCart, user }) {
     const [showToast, setShowToast] = useState(false);
     const [hasPurchased, setHasPurchased] = useState(false);
 
-    const socket = io("http://localhost:8800")
+    const socket = io("http://localhost:8800");
     const serverUrl = "http://localhost:8800";
     const token = localStorage.getItem("jwtToken");
 
     useEffect(() => {
         const fetchProducto = async () => {
+            socket.connect();
             try {
                 const res = await axios.get(`${serverUrl}/productos/detalle/${id}`);
                 setProduct(res.data);
@@ -39,6 +40,21 @@ function Producto({ isAuthenticated, addToCart, user }) {
             }
         };
 
+        fetchProducto();
+
+        return () => {
+            socket.off("producto-agregado");
+            socket.off("producto-editado");
+            socket.off("producto-eliminado");
+            socket.off("producto-comprado");
+            socket.off("producto-vendido");
+            socket.disconnect();
+        };
+    }, [id, isAuthenticated, user]);
+
+    useEffect(() => {
+        socket.connect();
+
         socket.on("producto-agregado", (productoAgregado) => {
             setProduct((prevProduct) => [...prevProduct, productoAgregado]);
         });
@@ -51,14 +67,23 @@ function Producto({ isAuthenticated, addToCart, user }) {
             setProduct(prevProducts => prevProducts.filter(p => p._id !== productoEliminado));
         });
 
-        fetchProducto();
+        socket.on("producto-comprado", (productoComprado) => {
+            setCart((prevCart) => [...prevCart, productoComprado]);
+        });
+
+        socket.on("producto-vendido", (productoVendido) => {
+            setCart((prevCart) => [...prevCart, productoVendido]);
+        });
 
         return () => {
             socket.off("producto-agregado");
             socket.off("producto-editado");
             socket.off("producto-eliminado");
+            socket.off("producto-comprado");
+            socket.off("producto-vendido");
+            socket.disconnect();
         };
-    }, [id, isAuthenticated, user]);
+    })
 
     const handleAddToCart = () => {
         addToCart({ ...product, quantity });

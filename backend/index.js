@@ -78,7 +78,6 @@ io.on("connection", (socket) => {
     });
 
     socket.on("producto-eliminado", (productoEliminado) => {
-        console.log("Producto eliminado:", productoEliminado);
         io.emit("producto-eliminado", productoEliminado);
     });
 
@@ -88,5 +87,15 @@ io.on("connection", (socket) => {
 
     socket.on("producto-agregado", (productoAgregado) => {
         io.emit("producto-agregado", productoAgregado);
+    });
+
+    socket.on("producto-comprado", (productoComprado) => {
+        console.log("Producto comprado:", productoComprado);
+        io.emit("producto-comprado", productoComprado);
+    });
+
+    socket.on("producto-vendido", (productoVendido) => {
+        console.log("Producto vendido:", productoVendido);
+        io.emit("producto-vendido", productoVendido);
     });
 })

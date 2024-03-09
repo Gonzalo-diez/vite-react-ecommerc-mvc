@@ -84,7 +84,7 @@ function AgregarComentario({ isAuthenticated, userId, user }) {
 
     return (
         isAuthenticated && (
-            <div className="nuevo-comentario">
+            <div className="nuevo-comentario form-container">
                 {showForm && (
                     <Form>
                         <Form.Group controlId="nombre">
