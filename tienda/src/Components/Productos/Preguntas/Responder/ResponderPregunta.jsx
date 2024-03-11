@@ -1,20 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Toast } from 'react-bootstrap';
 import { BiSolidCommentAdd } from "react-icons/bi";
-import { IoStarOutline } from "react-icons/io5";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import io from "socket.io-client";
-import { useAuth } from "../../../Context/authContext";
 
-function AgregarComentario({ isAuthenticated, user, hasPurchased }) {
-    const { userId } = useAuth();
-    const [newComment, setNewComment] = useState("");
-    const [rating, setRating] = useState("");
+function ResponderPregunta({ isAuthenticated, userId, user, productUserId }) {
+    const [responder, setResponder] = useState("");
     const [userName, setUserName] = useState("");
-    const [showToastComentario, setShowToastComentario] = useState(false);
+    const [showToastPregunta, setShowToastPregunta] = useState(false);
     const [showForm, setShowForm] = useState(true);
-    const [hasCommented, setHasCommented] = useState(false);
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -37,55 +32,48 @@ function AgregarComentario({ isAuthenticated, user, hasPurchased }) {
         fetchUserName();
     }, [isAuthenticated, user]);
 
-    const handleComentarioChange = (event) => {
-        setNewComment(event.target.value);
+    const handleReponderChange = (event) => {
+        setResponder(event.target.value);
     };
 
-    const handleRatingChange = (value) => {
-        setRating(value);
-    };
-
-    const handleSubmitComentario = async () => {
-        if (isAuthenticated) {
+    const handleSubmitRespuesta = async () => {
+        if (isAuthenticated && userId === productUserId) {
             try {
                 if (!token) {
                     console.error('No se encontró el token de autenticación.');
                     navigate("/usuarios/login");
                 }
 
-                const comentarioData = {
-                    text: newComment,
-                    rating: rating,
+                const responderData = {
+                    text: responder,
                     userId: userId,
                     productId: id,
                     name: userName,
                 };
 
-                const response = await axios.post(`${serverUrl}/comentarios/protected/agregarComentario`, comentarioData, {
+                const response = await axios.post(`${serverUrl}/preguntas/protected/responderPregunta/:id`, responderData, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
 
                 if (response.status === 200) {
-                    setNewComment("");
-                    setShowToastComentario(true);
-                    setHasCommented(true);
+                    setResponder("");
+                    setShowToastPregunta(true);
                 }
 
-                socket.emit("comentario-agregado", comentarioData);
+                socket.emit("pregunta-respondida", responderData);
 
                 setShowForm(false);
             } catch (err) {
-                console.error('Error al agregar el comentario:', err);
+                console.error('Error al responder el comentario:', err);
             }
         } else {
-            alert("Debes iniciar sesión o registrarte para comentar.");
+            console.log("Debes ser el creado del producto para responder a este comentario.");
         }
     };
 
     return (
-        isAuthenticated && hasPurchased && (
             <div className="nuevo-comentario form-container">
                 {showForm && (
                     <Form>
@@ -95,52 +83,39 @@ function AgregarComentario({ isAuthenticated, user, hasPurchased }) {
                                 type="text"
                                 placeholder="Ingresa tu nombre"
                                 value={userName}
-                                onChange={handleComentarioChange}
+                                onChange={handleReponderChange}
                                 disabled
                             />
                         </Form.Group>
-                        <Form.Group controlId="nuevoComentario">
-                            <Form.Label>Deja una opinión:</Form.Label>
+                        <Form.Group controlId="responder">
+                            <Form.Label>Responde:</Form.Label>
                             <Form.Control
                                 as="textarea"
                                 rows={3}
-                                value={newComment}
-                                onChange={handleComentarioChange}
+                                value={responder}
+                                onChange={handleReponderChange}
                             />
                         </Form.Group>
-                        <Form.Group controlId="rating">
-                            <Form.Label>Rating:</Form.Label>
-                            <span className="rating-stars">
-                                {[1, 2, 3, 4, 5].map((value) => (
-                                    <IoStarOutline
-                                        key={value}
-                                        className={`star-icon ${value <= rating ? 'filled' : ''}`}
-                                        onClick={() => handleRatingChange(value)}
-                                    />
-                                ))}
-                            </span>
-                        </Form.Group>
-                        <Button onClick={handleSubmitComentario} variant="primary" className="btn-comentario">
-                            <BiSolidCommentAdd /> Comentario
+                        <Button onClick={handleSubmitRespuesta} variant="primary" className="btn-comentario">
+                            <BiSolidCommentAdd /> Responder
                         </Button>
                     </Form>
                 )}
                 <Toast
-                    show={showToastComentario}
-                    onClose={() => setShowToastComentario(false)}
+                    show={showToastPregunta}
+                    onClose={() => setShowToastPregunta(false)}
                     delay={3000}
                     autohide
                     bg="success"
                     text="white"
                 >
                     <Toast.Header>
-                        <strong className="mr-auto">Comentario agregado</strong>
+                        <strong className="mr-auto">Respuesta agregada</strong>
                     </Toast.Header>
-                    <Toast.Body>Tu comentario se agregó.</Toast.Body>
+                    <Toast.Body>Tu respuesta se agregó.</Toast.Body>
                 </Toast>
             </div>
         )
-    );
 }
 
-export default AgregarComentario;
+export default ResponderPregunta;

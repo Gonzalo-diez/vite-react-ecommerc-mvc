@@ -3,6 +3,7 @@ const Comment = require("../models/comment")
 const Product = require("../models/product");
 const User = require("../models/user");
 const { io } = require("../index");
+const Question = require("../models/question");
 
 const ProductController = {
     getAllproduct: async (req, res, next) => {
@@ -48,7 +49,6 @@ const ProductController = {
         }
     },    
 
-
     getCommentsByProduct: async (req, res, next) => {
         const productId = req.params.id;
     
@@ -59,8 +59,19 @@ const ProductController = {
             console.error('Error:', err);
             return res.status(500).json({ error: 'Error en la base de datos', details: err.message });
         }
-    },    
+    }, 
     
+    getQuestionsByProduct: async (req, res) => {
+        const  productId = req.params.id;
+
+        try {
+            const questions = await Question.find({ product: productId }).exec();
+            return res.json(questions);
+        } catch (err) {
+            console.error('Error:', err);
+            return res.status(500).json({ error: 'Error en la base de datos', details: err.message });
+        }
+    },
 
     addProduct: async (req, res, next) => {
         const { title, brand, description, price, stock, category, userId } = req.body;
@@ -103,7 +114,6 @@ const ProductController = {
             return res.status(500).json({ error: "Error en la base de datos", details: err.message });
         }
     },
-    
 
     updateProduct: async (req, res, next) => {
         const productId = req.params.id;

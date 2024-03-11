@@ -15,7 +15,7 @@ import User from './User/User';
 import EditarPassword from './User/Editar/EditarPassword';
 import EditarPerfil from './User/Editar/EditarPerfil';
 import EditarComentario from './Productos/Comentarios/Editar/EditarComentario';
-import BorrarComentario from './Productos/Comentarios/Eliminar/BorrarComentario';
+import EditarPregunta from './Productos/Preguntas/Editar/EditarPregunta';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/App.css';
 
@@ -50,7 +50,7 @@ function App() {
           <Route path="/usuarios/protected/editarPerfil/:id" element={<EditarPerfil />} />
           <Route path="/usuarios/protected/cambiarContrasena/:userId" element={<EditarPassword />} />
           <Route path="/comentarios/protected/editarComentario/:id" element={<EditarComentario />} />
-          <Route path="/comentarios/protected/borrarComentario/:id" element={<BorrarComentario isAuthenticated={isAuthenticated} />} />
+          <Route path="/preguntas/protected/editarPregunta/:id" element={<EditarPregunta />} />
           <Route path="/productos/detalle/:id" element={<Producto isAuthenticated={isAuthenticated} setCart={setCart} addToCart={addToCart} user={user} />} />
           <Route path="/productos/:category" element={<ProductoCategoria />} />
           <Route path="/productos/protected/agregarProducto" element={<AgregarProducto isAuthenticated={isAuthenticated} user={user} />} />

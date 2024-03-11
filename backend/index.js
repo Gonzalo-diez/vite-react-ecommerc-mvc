@@ -77,10 +77,20 @@ io.on("connection", (socket) => {
         io.emit("comentario-editado", comentarioEditado);
     });
 
-    socket.on("comentario-respondido", (comentarioRespondido) => {
-        console.log("Comentario respondido:", comentarioRespondido);
-        io.emit("comentario-respondido", comentarioRespondido);
-    })
+    socket.on("pregunta-agregada", (preguntaAgregada) => {
+        console.log("Pregunta agregada:", preguntaAgregada);
+        io.emit("pregunta-agregada",  preguntaAgregada);
+    });
+    
+    socket.on("pregunta-editada", (preguntaEditada) => {
+        console.log("Pregunta editada:", preguntaEditada);
+        io.emit("pregunta-editada", preguntaEditada);
+    });
+
+    socket.on("pregunta-eliminada", (preguntaEliminada) => {
+        console.log("Pregunta eliminada:", preguntaEliminada);
+        io.emit("pregunta-eliminada", preguntaEliminada);
+    });
 
     socket.on("producto-eliminado", (productoEliminado) => {
         io.emit("producto-eliminado", productoEliminado);

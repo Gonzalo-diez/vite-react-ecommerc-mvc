@@ -6,10 +6,8 @@ import axios from "axios";
 import io from "socket.io-client";
 import moment from "moment";
 import StarRating from "../StarRating";
-import ResponderComentario from "./Responder/ResponderComentario";
 
-function Comentario({ isAuthenticated, userId, productUserId, user }) {
-    const [showReplyForm, setShowReplyForm] = useState(false);
+function Comentario({ isAuthenticated, userId }) {
     const navigate = useNavigate();
     const [comments, setComments] = useState([]);
     const { id } = useParams();
@@ -34,7 +32,6 @@ function Comentario({ isAuthenticated, userId, productUserId, user }) {
             socket.off("comentario-agregado");
             socket.off("comentario-editado");
             socket.off("comentario-eliminado");
-            socket.off("comentario-respondido");
             socket.disconnect();
         };
     }, [id]);
@@ -54,15 +51,10 @@ function Comentario({ isAuthenticated, userId, productUserId, user }) {
             setComments((prevComments) => prevComments.filter(comment => comment._id !== comentarioEliminadoId));
         });
 
-        socket.on("comentario-respondido", (comentarioRespondido) => {
-            setComments((prevComments) => [...prevComments, comentarioRespondido]);
-        });
-
         return () => {
             socket.off("comentario-agregado");
             socket.off("comentario-editado");
             socket.off("comentario-eliminado");
-            socket.off("comentario-respondido");
             socket.disconnect();
         };
     }, []);
@@ -76,11 +68,21 @@ function Comentario({ isAuthenticated, userId, productUserId, user }) {
         return totalRating / comments.length;
     };
 
-    const handleEliminarComentario = async (id) => {
+    const handleEliminarComentario = async (comentarioId) => {
         try {
-            navigate(`/comentarios/protected/borrarComentario/${id}`);
-        } catch (err) {
-            console.log(err);
+            const token = localStorage.getItem("jwtToken");
+
+            await axios.delete(`http://localhost:8800/comentarios/protected/borrarComentario/${comentarioId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            socket.emit("comentario-eliminado", comentarioId);
+
+            setComments(prevComments => prevComments.filter(comment => comment._id !== comentarioId));
+        } catch (error) {
+            console.error("Error al eliminar comentario:", error);
         }
     };
 
@@ -88,7 +90,9 @@ function Comentario({ isAuthenticated, userId, productUserId, user }) {
         <div className="comentarios-container">
             <h3>Opiniones</h3>
             {comments.length === 0 ? (
-                <p>Sin comentarios</p>
+                <div>
+                    <p>Sin comentarios</p>
+                </div>
             ) : (
                 <Row>
                     <Col md={3} className="mt-3">
@@ -133,16 +137,6 @@ function Comentario({ isAuthenticated, userId, productUserId, user }) {
                                                 <Button variant="danger" onClick={() => handleEliminarComentario(comment._id)}>
                                                     <IoTrash />
                                                 </Button>
-                                                {isAuthenticated && userId && userId === productUserId && (
-                                                    <div>
-                                                        <Button variant="primary" onClick={() => setShowReplyForm(!showReplyForm)}>
-                                                            Responder
-                                                        </Button>
-                                                        {showReplyForm && (
-                                                            <ResponderComentario isAuthenticated={isAuthenticated} userId={userId} user={user} productUserId={product.user._id} />
-                                                        )}
-                                                    </div>
-                                                )}
                                             </div>
                                         )}
                                     </div>

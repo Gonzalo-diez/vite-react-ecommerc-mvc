@@ -115,6 +115,10 @@ html {
     color: #f8d120;
 }
 
+.respuestas {
+    list-style-type: "\1f5e9";
+}
+
 /* === Formulario eliminar producto === */
 .eliminar-container img {
     width: 20%;

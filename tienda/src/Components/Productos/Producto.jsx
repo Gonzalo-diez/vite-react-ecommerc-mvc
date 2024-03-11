@@ -3,10 +3,12 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Card, Button, Form, Toast, ToastContainer, Carousel } from 'react-bootstrap';
 import { IoCart } from "react-icons/io5";
-import { useAuth } from "../Context/authContext";
 import io from "socket.io-client";
+import { useAuth } from "../Context/authContext";
 import Comentario from "./Comentarios/Comentario";
+import Pregunta from "./Preguntas/Pregunta";
 import AgregarComentario from "./Comentarios/Agregar/AgregarComentario";
+import AgregarPregunta from "./Preguntas/Agregar/AgregarPregunta";
 
 function Producto({ isAuthenticated, addToCart, user, setCart }) {
     const { userId } = useAuth();
@@ -164,8 +166,10 @@ function Producto({ isAuthenticated, addToCart, user, setCart }) {
                     </Toast>
                 </ToastContainer>
             </div>
+            <Pregunta isAuthenticated={isAuthenticated} userId={userId} token={token} productUserId={product.user._id} user={user}  />
+            <AgregarPregunta isAuthenticated={isAuthenticated} userId={userId} user={user} />
             <Comentario isAuthenticated={isAuthenticated} userId={userId} token={token} productUserId={product.user._id} user={user} />
-            <AgregarComentario isAuthenticated={isAuthenticated} userId={userId} user={user} />
+            <AgregarComentario isAuthenticated={isAuthenticated} userId={userId} user={user} hasPurchased={hasPurchased} />
         </div>
     );
 }

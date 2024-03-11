@@ -23,6 +23,7 @@ const upload = multer({ storage: storage });
 productRoutes.get("/", ProductController.getAllproduct);
 productRoutes.get("/:category", ProductController.getproductByCategory);
 productRoutes.get("/detalle/:id", ProductController.getProductDetail);
+productRoutes.get("/preguntas/:id", ProductController.getQuestionsByProduct);
 productRoutes.get("/comentarios/:id", ProductController.getCommentsByProduct);
 productRoutes.post("/protected/agregarProducto", protectWithJWT, upload.array("images"), ProductController.addProduct);
 productRoutes.put("/protected/editarProducto/:id", protectWithJWT, upload.array("images"), ProductController.updateProduct);

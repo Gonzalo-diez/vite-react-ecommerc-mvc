@@ -9,7 +9,6 @@ commentRoutes.use("/protected", protectWithJWT);
 commentRoutes.get("/ratings", CommentController.getRatings);
 commentRoutes.get("/:id", CommentController.getCommentById)
 commentRoutes.post("/protected/agregarComentario", protectWithJWT, CommentController.addComment);
-commentRoutes.post("/protected/responderComentario/:id", protectWithJWT, CommentController.respondComment);
 commentRoutes.put("/protected/editarComentario/:id", protectWithJWT, CommentController.editComment);
 commentRoutes.delete("/protected/borrarComentario/:id", protectWithJWT, CommentController.deleteComment);
 

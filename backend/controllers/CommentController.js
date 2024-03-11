@@ -127,46 +127,6 @@ const CommentController = {
             return res.status(500).json({ error: 'Error en la base de datos', details: err.message });
         }
     },
-
-    respondComment: async (req, res) => {
-        const commentId = req.params.id;
-        const { text, userId } = req.body;
-
-        try {
-            const user = await User.findById(userId).exec();
-            if (!user) {
-                return res.status(404).json({ error: 'Usuario no encontrado' });
-            }
-
-            const comment = await Comment.findById(commentId).exec();
-            if (!comment) {
-                return res.status(404).json({ error: 'Comentario no encontrado' });
-            }
-
-            const product = await Product.findById(comment.product).exec();
-            if (!product) {
-                return res.status(404).json({ error: 'Producto no encontrado' });
-            }
-
-            if (product.user.toString() !== userId) {
-                return res.status(403).json({ error: 'No tienes permisos para responder a este comentario' });
-            }
-
-            comment.responses.push({
-                text,
-                userId,
-                productId: product._id,
-                date: new Date(),
-            });
-
-            await comment.save();
-
-            return res.json('Respuesta agregada al comentario');
-        } catch (err) {
-            console.error('Error al responder al comentario:', err);
-            return res.status(500).json({ error: 'Error en la base de datos', details: err.message });
-        }
-    },
 };
 
 module.exports = CommentController;

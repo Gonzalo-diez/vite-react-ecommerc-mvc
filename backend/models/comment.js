@@ -22,17 +22,6 @@ const commentSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
-    responses: [{
-        text: String,
-        userId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
-        },
-        date: {
-            type: Date,
-            default: Date.now,
-        }
-    }]
 });
 
 const Comment = mongoose.model('Comment', commentSchema);

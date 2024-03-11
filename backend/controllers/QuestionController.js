@@ -88,7 +88,7 @@ const QuestionController = {
         const questionId = req.params.id;
 
         try {
-            const deleteQuestion = await Comment.deleteOne({ _id: questionId });
+            const deleteQuestion = await Question.deleteOne({ _id: questionId });
 
             if (deleteQuestion.deletedCount === 0) {
                 return res.status(404).json({ error: 'Pregunta no encontrada' });
