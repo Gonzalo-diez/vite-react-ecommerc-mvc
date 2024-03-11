@@ -1,14 +1,8 @@
 const mongoose = require("mongoose");
 
-// Define el modelo de comentario en Mongoose
-const commentSchema = new mongoose.Schema({
+// Define el modelo de preguntas en mongoose
+const questionSchema = new mongoose.Schema({
     text: String,
-    rating: { 
-        type: Number,
-        min: 1,
-        max: 5,
-        default: 1,
-    },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -35,6 +29,6 @@ const commentSchema = new mongoose.Schema({
     }]
 });
 
-const Comment = mongoose.model('Comment', commentSchema);
+const Question = mongoose.model("Question", questionSchema);
 
-module.exports = Comment;
+module.exports = Question;

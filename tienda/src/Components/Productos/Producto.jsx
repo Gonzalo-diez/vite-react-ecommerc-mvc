@@ -3,10 +3,10 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Card, Button, Form, Toast, ToastContainer, Carousel } from 'react-bootstrap';
 import { IoCart } from "react-icons/io5";
-import Comentario from "./Comentarios/Comentario";
-import AgregarComentario from "./Comentarios/Agregar/AgregarComentario";
 import { useAuth } from "../Context/authContext";
 import io from "socket.io-client";
+import Comentario from "./Comentarios/Comentario";
+import AgregarComentario from "./Comentarios/Agregar/AgregarComentario";
 
 function Producto({ isAuthenticated, addToCart, user, setCart }) {
     const { userId } = useAuth();
@@ -164,7 +164,7 @@ function Producto({ isAuthenticated, addToCart, user, setCart }) {
                     </Toast>
                 </ToastContainer>
             </div>
-            <Comentario isAuthenticated={isAuthenticated} userId={userId} token={token} />
+            <Comentario isAuthenticated={isAuthenticated} userId={userId} token={token} productUserId={product.user._id} user={user} />
             <AgregarComentario isAuthenticated={isAuthenticated} userId={userId} user={user} />
         </div>
     );

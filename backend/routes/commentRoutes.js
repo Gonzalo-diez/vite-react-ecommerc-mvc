@@ -7,9 +7,10 @@ const commentRoutes = express.Router();
 commentRoutes.use("/protected", protectWithJWT);
 
 commentRoutes.get("/ratings", CommentController.getRatings);
-commentRoutes.get("/protected/:id", passport.authenticate('jwt', { session: false }), CommentController.getCommentById)
-commentRoutes.post("/protected/agregarComentario", passport.authenticate('jwt', { session: false }), CommentController.addComment);
-commentRoutes.put("/protected/editarComentario/:id", passport.authenticate('jwt', { session: false }), CommentController.editComment);
-commentRoutes.delete("/protected/borrarComentario/:id", passport.authenticate('jwt', { session: false }), CommentController.deleteComment);
+commentRoutes.get("/:id", CommentController.getCommentById)
+commentRoutes.post("/protected/agregarComentario", protectWithJWT, CommentController.addComment);
+commentRoutes.post("/protected/responderComentario/:id", protectWithJWT, CommentController.respondComment);
+commentRoutes.put("/protected/editarComentario/:id", protectWithJWT, CommentController.editComment);
+commentRoutes.delete("/protected/borrarComentario/:id", protectWithJWT, CommentController.deleteComment);
 
 module.exports = commentRoutes;

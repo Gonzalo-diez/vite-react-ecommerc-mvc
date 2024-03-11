@@ -77,6 +77,11 @@ io.on("connection", (socket) => {
         io.emit("comentario-editado", comentarioEditado);
     });
 
+    socket.on("comentario-respondido", (comentarioRespondido) => {
+        console.log("Comentario respondido:", comentarioRespondido);
+        io.emit("comentario-respondido", comentarioRespondido);
+    })
+
     socket.on("producto-eliminado", (productoEliminado) => {
         io.emit("producto-eliminado", productoEliminado);
     });

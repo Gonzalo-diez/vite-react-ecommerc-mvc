@@ -6,6 +6,6 @@ const protectWithJWT = passport.authenticate('jwt', { session: false });
 const cartRoutes = express.Router();
 cartRoutes.use("/protected", protectWithJWT);
 
-cartRoutes.post("/protected/comprar", passport.authenticate('jwt', { session: false }), CartController.purchase);
+cartRoutes.post("/protected/comprar", protectWithJWT, CartController.purchase);
 
 module.exports = cartRoutes;

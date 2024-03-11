@@ -35,14 +35,14 @@ const CommentController = {
 
     addComment: async (req, res) => {
         const { text, rating, userId, productId, name } = req.body;
-    
+
         try {
             const boughtProduct = await BoughtProduct.findOne({
                 user: userId,
                 product: productId,
                 completed: true
             }).exec();
-    
+
             if (!boughtProduct) {
                 return res.status(403).json({
                     error: 'No puedes comentar un producto que no has comprado o no ha sido completado',
@@ -51,7 +51,7 @@ const CommentController = {
             }
 
             const product = await Product.findById(productId).exec();
-    
+
             if (!product) {
                 return res.status(404).json({ error: 'Producto no encontrado' });
             }
@@ -63,15 +63,15 @@ const CommentController = {
                 product: productId,
                 name,
             });
-    
+
             await newComment.save();
-    
+
             return res.json('Comentario agregado');
         } catch (err) {
             console.error('Error al guardar el comentario:', err);
             return res.status(500).json({ error: 'Error en la base de datos', details: err.message });
         }
-    },    
+    },
 
     editComment: async (req, res) => {
         const commentId = req.params.id;
@@ -79,7 +79,7 @@ const CommentController = {
 
         try {
             const user = await User.findById(userId).exec();
-            
+
             if (!user) {
                 return res.status(404).json({ error: 'Usuario no encontrado' });
             }
@@ -91,7 +91,7 @@ const CommentController = {
             }
 
             if (comment.user.toString() !== userId) {
-                return res.status(403).json({ error: "No tienes permisos para editar este producto" });
+                return res.status(403).json({ error: "No tienes permisos para editar este comentario" });
             }
 
             const updatedComment = await Comment.findByIdAndUpdate(
@@ -124,6 +124,46 @@ const CommentController = {
             return res.json('Comentario eliminado');
         } catch (err) {
             console.error('Error al eliminar el comentario:', err);
+            return res.status(500).json({ error: 'Error en la base de datos', details: err.message });
+        }
+    },
+
+    respondComment: async (req, res) => {
+        const commentId = req.params.id;
+        const { text, userId } = req.body;
+
+        try {
+            const user = await User.findById(userId).exec();
+            if (!user) {
+                return res.status(404).json({ error: 'Usuario no encontrado' });
+            }
+
+            const comment = await Comment.findById(commentId).exec();
+            if (!comment) {
+                return res.status(404).json({ error: 'Comentario no encontrado' });
+            }
+
+            const product = await Product.findById(comment.product).exec();
+            if (!product) {
+                return res.status(404).json({ error: 'Producto no encontrado' });
+            }
+
+            if (product.user.toString() !== userId) {
+                return res.status(403).json({ error: 'No tienes permisos para responder a este comentario' });
+            }
+
+            comment.responses.push({
+                text,
+                userId,
+                productId: product._id,
+                date: new Date(),
+            });
+
+            await comment.save();
+
+            return res.json('Respuesta agregada al comentario');
+        } catch (err) {
+            console.error('Error al responder al comentario:', err);
             return res.status(500).json({ error: 'Error en la base de datos', details: err.message });
         }
     },

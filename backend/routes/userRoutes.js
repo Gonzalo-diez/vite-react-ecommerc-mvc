@@ -21,13 +21,13 @@ const avatar = multer({ storage: storage });
 
 userRoutes.post("/registro", avatar.single('avatar'), UserController.register);
 userRoutes.post("/login", UserController.login);
-userRoutes.put("/protected/editarPerfil/:id", passport.authenticate('jwt', { session: false }), avatar.single('avatar'), UserController.editUserProfile);
-userRoutes.put("/protected/cambiarContrasena/:userId", passport.authenticate('jwt', { session: false }), UserController.changeUserPassword);
+userRoutes.put("/protected/editarPerfil/:id", protectWithJWT, avatar.single('avatar'), UserController.editUserProfile);
+userRoutes.put("/protected/cambiarContrasena/:userId", protectWithJWT, UserController.changeUserPassword);
 userRoutes.get("/detalle/:id", UserController.getUserDetail);
-userRoutes.get("/protected/:id", passport.authenticate('jwt', { session: false }), UserController.getUserById);
-userRoutes.get("/protected/productosCreados/:id", passport.authenticate('jwt', { session: false }), UserController.getUserProducts);
-userRoutes.get("/protected/productosComprados/:id", passport.authenticate('jwt', { session: false }), UserController.getUserBoughtProducts);
-userRoutes.get("/protected/productosVendidos/:id", passport.authenticate('jwt', { session: false }), UserController.getUserSoldProducts);
-userRoutes.get("/protected/logout/:id", passport.authenticate('jwt', { session: false }), UserController.logout);
+userRoutes.get("/protected/:id", protectWithJWT, UserController.getUserById);
+userRoutes.get("/protected/productosCreados/:id", protectWithJWT, UserController.getUserProducts);
+userRoutes.get("/protected/productosComprados/:id", protectWithJWT, UserController.getUserBoughtProducts);
+userRoutes.get("/protected/productosVendidos/:id", protectWithJWT, UserController.getUserSoldProducts);
+userRoutes.get("/protected/logout/:id", protectWithJWT, UserController.logout);
 
 module.exports = userRoutes;

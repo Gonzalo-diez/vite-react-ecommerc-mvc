@@ -6,8 +6,10 @@ import axios from "axios";
 import io from "socket.io-client";
 import moment from "moment";
 import StarRating from "../StarRating";
+import ResponderComentario from "./Responder/ResponderComentario";
 
-function Comentario({ isAuthenticated, userId }) {
+function Comentario({ isAuthenticated, userId, productUserId, user }) {
+    const [showReplyForm, setShowReplyForm] = useState(false);
     const navigate = useNavigate();
     const [comments, setComments] = useState([]);
     const { id } = useParams();
@@ -32,6 +34,7 @@ function Comentario({ isAuthenticated, userId }) {
             socket.off("comentario-agregado");
             socket.off("comentario-editado");
             socket.off("comentario-eliminado");
+            socket.off("comentario-respondido");
             socket.disconnect();
         };
     }, [id]);
@@ -51,10 +54,15 @@ function Comentario({ isAuthenticated, userId }) {
             setComments((prevComments) => prevComments.filter(comment => comment._id !== comentarioEliminadoId));
         });
 
+        socket.on("comentario-respondido", (comentarioRespondido) => {
+            setComments((prevComments) => [...prevComments, comentarioRespondido]);
+        });
+
         return () => {
             socket.off("comentario-agregado");
             socket.off("comentario-editado");
             socket.off("comentario-eliminado");
+            socket.off("comentario-respondido");
             socket.disconnect();
         };
     }, []);
@@ -125,6 +133,16 @@ function Comentario({ isAuthenticated, userId }) {
                                                 <Button variant="danger" onClick={() => handleEliminarComentario(comment._id)}>
                                                     <IoTrash />
                                                 </Button>
+                                                {isAuthenticated && userId && userId === productUserId && (
+                                                    <div>
+                                                        <Button variant="primary" onClick={() => setShowReplyForm(!showReplyForm)}>
+                                                            Responder
+                                                        </Button>
+                                                        {showReplyForm && (
+                                                            <ResponderComentario isAuthenticated={isAuthenticated} userId={userId} user={user} productUserId={product.user._id} />
+                                                        )}
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
                                     </div>
