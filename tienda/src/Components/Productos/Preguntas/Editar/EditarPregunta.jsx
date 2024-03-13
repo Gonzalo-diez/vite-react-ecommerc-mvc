@@ -3,16 +3,14 @@ import { Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { useAuth } from '../../../Context/authContext';
 import { useNavigate, useParams } from 'react-router-dom';
-import io from "socket.io-client";
 
-const EditarPregunta= () => {
+const EditarPregunta= ({ socket }) => {
     const { id } = useParams();
     const { userId } = useAuth();
     const navigate = useNavigate();
     const [newQuestion, setNewQuestion] = useState('');
 
     const token = localStorage.getItem("jwtToken");
-    const socket = io("http://localhost:8800");
 
     useEffect(() => {
         const fetchPregunta = async () => {

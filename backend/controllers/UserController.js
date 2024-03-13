@@ -7,7 +7,6 @@ const Product = require("../models/product");
 const BoughtProduct = require("../models/boughtProduct");
 const SoldProduct = require("../models/soldProduct");
 
-
 const UserController = {
     register: async (req, res, next) => {
         const { name, surname, email, password } = req.body;

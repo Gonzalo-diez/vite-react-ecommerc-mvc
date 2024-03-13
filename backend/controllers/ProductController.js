@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const Comment = require("../models/comment")
 const Product = require("../models/product");
 const User = require("../models/user");
-const { io } = require("../index");
 const Question = require("../models/question");
 
 const ProductController = {
@@ -33,25 +32,25 @@ const ProductController = {
 
     getProductDetail: async (req, res, next) => {
         const id = req.params.id;
-    
+
         try {
             const productId = new mongoose.Types.ObjectId(id);
             const product = await Product.findOne({ _id: productId }).exec();
-    
+
             if (!product) {
                 return res.status(404).json({ error: "Producto no encontrado" });
             }
-    
+
             return res.json(product);
         } catch (err) {
             console.error('Error:', err);
             return res.status(500).json({ error: "Error en la base de datos", details: err.message });
         }
-    },    
+    },
 
     getCommentsByProduct: async (req, res, next) => {
         const productId = req.params.id;
-    
+
         try {
             const comments = await Comment.find({ product: productId }).exec();
             return res.json(comments);
@@ -59,10 +58,10 @@ const ProductController = {
             console.error('Error:', err);
             return res.status(500).json({ error: 'Error en la base de datos', details: err.message });
         }
-    }, 
-    
+    },
+
     getQuestionsByProduct: async (req, res) => {
-        const  productId = req.params.id;
+        const productId = req.params.id;
 
         try {
             const questions = await Question.find({ product: productId }).exec();
@@ -75,20 +74,20 @@ const ProductController = {
 
     addProduct: async (req, res, next) => {
         const { title, brand, description, price, stock, category, userId } = req.body;
-    
+
         try {
             const user = await User.findById(userId).exec();
-            
+
             if (!user) {
                 return res.status(404).json({ error: 'Usuario no encontrado' });
             }
-    
+
             const images = req.files.map(file => file.filename);
 
             if (!images || images.length === 0) {
                 return res.status(400).json({ error: 'No se proporcionaron imágenes válidas' });
             }
-    
+
             const newProduct = new Product({
                 title,
                 brand,
@@ -99,12 +98,12 @@ const ProductController = {
                 images,
                 user: userId,
             });
-    
+
             const savedProduct = await newProduct.save();
-    
+
             user.createdProducts.push(savedProduct);
             await user.save();
-    
+
             return res.json({
                 message: "Producto creado!!!",
                 Product: newProduct,
@@ -121,7 +120,7 @@ const ProductController = {
 
         try {
             const user = await User.findById(userId).exec();
-            
+
             if (!user) {
                 return res.status(404).json({ error: 'Producto no encontrado' });
             }

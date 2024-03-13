@@ -18,6 +18,7 @@ const questionSchema = new mongoose.Schema({
     },
     responses: [{
         text: String,
+        name: String,
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'

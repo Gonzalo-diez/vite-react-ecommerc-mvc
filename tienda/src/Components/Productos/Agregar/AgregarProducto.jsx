@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import io from "socket.io-client";
 
-function AgregarProducto({ isAuthenticated, user }) {
+function AgregarProducto({ isAuthenticated, user, socket }) {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [brand, setBrand] = useState("");
@@ -16,7 +16,6 @@ function AgregarProducto({ isAuthenticated, user }) {
 
   const userId = user ? user._id : null;
   const token = localStorage.getItem("jwtToken");
-  const socket = io("http://localhost:8800")
 
   const handleAgregar = async () => {
     if (!isAuthenticated) {

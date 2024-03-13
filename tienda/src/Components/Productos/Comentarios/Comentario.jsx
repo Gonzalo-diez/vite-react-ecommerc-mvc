@@ -3,20 +3,19 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Row, Col, OverlayTrigger, Tooltip, Button } from 'react-bootstrap';
 import { IoPencil, IoTrash, IoStar } from "react-icons/io5";
 import axios from "axios";
-import io from "socket.io-client";
 import moment from "moment";
 import StarRating from "../StarRating";
 
-function Comentario({ isAuthenticated, userId }) {
+function Comentario({ isAuthenticated, userId, socket }) {
     const navigate = useNavigate();
     const [comments, setComments] = useState([]);
     const { id } = useParams();
 
-    const socket = io("http://localhost:8800");
     const serverUrl = "http://localhost:8800";
 
     useEffect(() => {
         socket.connect();
+
         const fetchComments = async () => {
             try {
                 const comentariosRes = await axios.get(`${serverUrl}/productos/comentarios/${id}`);

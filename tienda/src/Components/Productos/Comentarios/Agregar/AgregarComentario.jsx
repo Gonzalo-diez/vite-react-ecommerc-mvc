@@ -4,11 +4,12 @@ import { BiSolidCommentAdd } from "react-icons/bi";
 import { IoStarOutline } from "react-icons/io5";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import io from "socket.io-client";
 import { useAuth } from "../../../Context/authContext";
+import { useCart } from "../../../Context/CartContext";
 
-function AgregarComentario({ isAuthenticated, user, hasPurchased }) {
+function AgregarComentario({ isAuthenticated, user, socket }) {
     const { userId } = useAuth();
+    const { hasPurchased } = useCart();
     const [newComment, setNewComment] = useState("");
     const [rating, setRating] = useState("");
     const [userName, setUserName] = useState("");
@@ -20,7 +21,6 @@ function AgregarComentario({ isAuthenticated, user, hasPurchased }) {
 
     const token = localStorage.getItem("jwtToken");
     const serverUrl = "http://localhost:8800";
-    const socket = io("http://localhost:8800");
 
     useEffect(() => {
         const fetchUserName = async () => {
@@ -36,6 +36,27 @@ function AgregarComentario({ isAuthenticated, user, hasPurchased }) {
 
         fetchUserName();
     }, [isAuthenticated, user]);
+
+    useEffect(() => {
+        if (isAuthenticated && userId && id) {
+            const fetchUserBoughtProducts = async () => {
+                try {
+                    const response = await axios.get(`${serverUrl}/usuarios/protected/productosComprados/${userId}`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        }
+                    });
+                    const boughtProducts = response.data.boughtProducts;
+                    const hasBoughtProduct = boughtProducts.some(product => product.productId === id);
+                    setShowForm(hasBoughtProduct);
+                } catch (error) {
+                    console.error('Error al verificar si el usuario ha comprado el producto:', error);
+                }
+            };
+
+            fetchUserBoughtProducts();
+        }
+    }, [isAuthenticated, userId, id])
 
     const handleComentarioChange = (event) => {
         setNewComment(event.target.value);
@@ -85,7 +106,7 @@ function AgregarComentario({ isAuthenticated, user, hasPurchased }) {
     };
 
     return (
-        isAuthenticated && hasPurchased && (
+        isAuthenticated && hasPurchased && showForm && (
             <div className="nuevo-comentario form-container">
                 {showForm && (
                     <Form>

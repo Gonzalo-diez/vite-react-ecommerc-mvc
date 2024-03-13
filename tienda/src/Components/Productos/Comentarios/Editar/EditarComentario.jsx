@@ -5,7 +5,7 @@ import { useAuth } from '../../../Context/authContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import io from "socket.io-client";
 
-const EditarComentario = () => {
+const EditarComentario = ({ socket }) => {
     const { id } = useParams();
     const { userId } = useAuth();
     const navigate = useNavigate();
@@ -13,7 +13,6 @@ const EditarComentario = () => {
     const [rating, setRating] = useState('');
 
     const token = localStorage.getItem("jwtToken");
-    const socket = io("http://localhost:8800");
 
     useEffect(() => {
         const fetchComentario = async () => {

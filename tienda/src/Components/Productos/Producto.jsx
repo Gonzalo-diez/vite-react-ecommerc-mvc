@@ -3,31 +3,33 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Card, Button, Form, Toast, ToastContainer, Carousel } from 'react-bootstrap';
 import { IoCart } from "react-icons/io5";
-import io from "socket.io-client";
-import { useAuth } from "../Context/authContext";
 import Comentario from "./Comentarios/Comentario";
 import Pregunta from "./Preguntas/Pregunta";
 import AgregarComentario from "./Comentarios/Agregar/AgregarComentario";
 import AgregarPregunta from "./Preguntas/Agregar/AgregarPregunta";
+import { useAuth } from "../Context/authContext";
+import { useCart } from "../Context/CartContext";
 
-function Producto({ isAuthenticated, addToCart, user, setCart }) {
+function Producto({ isAuthenticated, user, socket }) {
+    const { setCart, addToCart, hasPurchased, setHasPurchased } = useCart();
     const { userId } = useAuth();
     const { id } = useParams();
     const [product, setProduct] = useState(null);
+    const [productCreatedByUser, setProductCreatedByUser] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const [showToast, setShowToast] = useState(false);
-    const [hasPurchased, setHasPurchased] = useState(false);
 
-    const socket = io("http://localhost:8800");
-    const serverUrl = "http://localhost:8800";
     const token = localStorage.getItem("jwtToken");
+    const serverUrl = "http://localhost:8800";
 
     useEffect(() => {
+        socket.connect();
+
         const fetchProducto = async () => {
-            socket.connect();
             try {
                 const res = await axios.get(`${serverUrl}/productos/detalle/${id}`);
                 setProduct(res.data);
+                setProductCreatedByUser(res.data.user);
 
                 if (isAuthenticated && user && user._id) {
                     const boughtProductsRes = await axios.get(`${serverUrl}/usuarios/protected/productosComprados/${user._id}`, {
@@ -166,10 +168,10 @@ function Producto({ isAuthenticated, addToCart, user, setCart }) {
                     </Toast>
                 </ToastContainer>
             </div>
-            <Pregunta isAuthenticated={isAuthenticated} userId={userId} token={token} productUserId={product.user._id} user={user}  />
-            <AgregarPregunta isAuthenticated={isAuthenticated} userId={userId} user={user} />
-            <Comentario isAuthenticated={isAuthenticated} userId={userId} token={token} productUserId={product.user._id} user={user} />
-            <AgregarComentario isAuthenticated={isAuthenticated} userId={userId} user={user} hasPurchased={hasPurchased} />
+            <Pregunta socket={socket} isAuthenticated={isAuthenticated} userId={userId} token={token} user={user} productCreatedByUser={productCreatedByUser} />
+            <AgregarPregunta socket={socket} isAuthenticated={isAuthenticated} userId={userId} user={user} />
+            <Comentario socket={socket} isAuthenticated={isAuthenticated} userId={userId} token={token} user={user} />
+            <AgregarComentario socket={socket} isAuthenticated={isAuthenticated} userId={userId} user={user} />
         </div>
     );
 }

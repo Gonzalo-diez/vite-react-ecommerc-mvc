@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
-import io from "socket.io-client";
 import { useAuth } from "../../Context/authContext";
 
-function EditarProducto({ isAuthenticated }) {
+function EditarProducto({ isAuthenticated, socket }) {
     const { id } = useParams();
     const { userId } = useAuth();
     const navigate = useNavigate();
@@ -18,7 +17,6 @@ function EditarProducto({ isAuthenticated }) {
     const [images, setImages] = useState(null);
 
     const token = localStorage.getItem("jwtToken");
-    const socket = io("http://localhost:8800");
 
     useEffect(() => {
         const fetchProducto = async () => {

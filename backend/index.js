@@ -63,8 +63,6 @@ server.listen(PORT, () => {
 });
 
 io.on("connection", (socket) => {
-    console.log("Nuevo cliente conectado");
-
     socket.on("comentario-eliminado", (comentarioEliminado) => {
         io.emit("comentario-eliminado", comentarioEliminado);
     });
@@ -78,17 +76,14 @@ io.on("connection", (socket) => {
     });
 
     socket.on("pregunta-agregada", (preguntaAgregada) => {
-        console.log("Pregunta agregada:", preguntaAgregada);
         io.emit("pregunta-agregada",  preguntaAgregada);
     });
     
     socket.on("pregunta-editada", (preguntaEditada) => {
-        console.log("Pregunta editada:", preguntaEditada);
         io.emit("pregunta-editada", preguntaEditada);
     });
 
     socket.on("pregunta-eliminada", (preguntaEliminada) => {
-        console.log("Pregunta eliminada:", preguntaEliminada);
         io.emit("pregunta-eliminada", preguntaEliminada);
     });
 
@@ -105,12 +100,10 @@ io.on("connection", (socket) => {
     });
 
     socket.on("producto-comprado", (productoComprado) => {
-        console.log("Producto comprado:", productoComprado);
         io.emit("producto-comprado", productoComprado);
     });
 
     socket.on("producto-vendido", (productoVendido) => {
-        console.log("Producto vendido:", productoVendido);
         io.emit("producto-vendido", productoVendido);
     });
 })

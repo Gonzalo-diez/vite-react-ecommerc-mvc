@@ -3,9 +3,8 @@ import { Form, Button, Toast } from 'react-bootstrap';
 import { BiSolidCommentAdd } from "react-icons/bi";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import io from "socket.io-client";
 
-function ResponderPregunta({ isAuthenticated, userId, user, productUserId }) {
+function ResponderPregunta({ isAuthenticated, userId, user, productCreatedByUser, token, questionId, socket }) {
     const [responder, setResponder] = useState("");
     const [userName, setUserName] = useState("");
     const [showToastPregunta, setShowToastPregunta] = useState(false);
@@ -13,9 +12,7 @@ function ResponderPregunta({ isAuthenticated, userId, user, productUserId }) {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const token = localStorage.getItem("jwtToken");
     const serverUrl = "http://localhost:8800";
-    const socket = io("http://localhost:8800");
 
     useEffect(() => {
         const fetchUserName = async () => {
@@ -37,7 +34,7 @@ function ResponderPregunta({ isAuthenticated, userId, user, productUserId }) {
     };
 
     const handleSubmitRespuesta = async () => {
-        if (isAuthenticated && userId === productUserId) {
+        if (isAuthenticated && userId === productCreatedByUser) {
             try {
                 if (!token) {
                     console.error('No se encontró el token de autenticación.');
@@ -51,7 +48,7 @@ function ResponderPregunta({ isAuthenticated, userId, user, productUserId }) {
                     name: userName,
                 };
 
-                const response = await axios.post(`${serverUrl}/preguntas/protected/responderPregunta/:id`, responderData, {
+                const response = await axios.post(`${serverUrl}/preguntas/protected/responderPregunta/${questionId}`, responderData, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -66,56 +63,56 @@ function ResponderPregunta({ isAuthenticated, userId, user, productUserId }) {
 
                 setShowForm(false);
             } catch (err) {
-                console.error('Error al responder el comentario:', err);
+                console.error('Error al responder la pregunta:', err);
             }
         } else {
-            console.log("Debes ser el creado del producto para responder a este comentario.");
+            console.log("Debes ser el creador del producto para responder a esta pregunta.");
         }
     };
 
     return (
-            <div className="nuevo-comentario form-container">
-                {showForm && (
-                    <Form>
-                        <Form.Group controlId="nombre">
-                            <Form.Label>Tu Nombre:</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Ingresa tu nombre"
-                                value={userName}
-                                onChange={handleReponderChange}
-                                disabled
-                            />
-                        </Form.Group>
-                        <Form.Group controlId="responder">
-                            <Form.Label>Responde:</Form.Label>
-                            <Form.Control
-                                as="textarea"
-                                rows={3}
-                                value={responder}
-                                onChange={handleReponderChange}
-                            />
-                        </Form.Group>
-                        <Button onClick={handleSubmitRespuesta} variant="primary" className="btn-comentario">
-                            <BiSolidCommentAdd /> Responder
-                        </Button>
-                    </Form>
-                )}
-                <Toast
-                    show={showToastPregunta}
-                    onClose={() => setShowToastPregunta(false)}
-                    delay={3000}
-                    autohide
-                    bg="success"
-                    text="white"
-                >
-                    <Toast.Header>
-                        <strong className="mr-auto">Respuesta agregada</strong>
-                    </Toast.Header>
-                    <Toast.Body>Tu respuesta se agregó.</Toast.Body>
-                </Toast>
-            </div>
-        )
+        <div className="nuevo-comentario form-container">
+            {showForm && (
+                <Form>
+                    <Form.Group controlId="nombre">
+                        <Form.Label>Tu Nombre:</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Ingresa tu nombre"
+                            value={userName}
+                            onChange={handleReponderChange}
+                            disabled
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="responder">
+                        <Form.Label>Responde:</Form.Label>
+                        <Form.Control
+                            as="textarea"
+                            rows={3}
+                            value={responder}
+                            onChange={handleReponderChange}
+                        />
+                    </Form.Group>
+                    <Button onClick={handleSubmitRespuesta} variant="primary" className="btn-comentario">
+                        <BiSolidCommentAdd /> Responder
+                    </Button>
+                </Form>
+            )}
+            <Toast
+                show={showToastPregunta}
+                onClose={() => setShowToastPregunta(false)}
+                delay={3000}
+                autohide
+                bg="success"
+                text="white"
+            >
+                <Toast.Header>
+                    <strong className="mr-auto">Respuesta agregada</strong>
+                </Toast.Header>
+                <Toast.Body>Tu respuesta se agregó.</Toast.Body>
+            </Toast>
+        </div>
+    );
 }
 
 export default ResponderPregunta;

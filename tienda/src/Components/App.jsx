@@ -16,27 +16,14 @@ import EditarPassword from './User/Editar/EditarPassword';
 import EditarPerfil from './User/Editar/EditarPerfil';
 import EditarComentario from './Productos/Comentarios/Editar/EditarComentario';
 import EditarPregunta from './Productos/Preguntas/Editar/EditarPregunta';
+import io from "socket.io-client";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/App.css';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [cart, setCart] = useState([]);
   const [user, setUser] = useState(null);
-
-  const addToCart = (producto) => {
-    setCart([...cart, producto]);
-  };
-
-  const removeFromCart = (productId) => {
-    const updatedCart = [...cart];
-    const index = updatedCart.findIndex((producto) => producto._id === productId);
-  
-    if (index !== -1) {
-      updatedCart.splice(index, 1);
-      setCart(updatedCart);
-    }
-  };
+  const socket = io("http://localhost:8800");
 
   return (
     <>
@@ -49,14 +36,14 @@ function App() {
           <Route path="/usuarios/protected/:userId" element={<User isAuthenticated={isAuthenticated} user={user} setUser={setUser} />} />
           <Route path="/usuarios/protected/editarPerfil/:id" element={<EditarPerfil />} />
           <Route path="/usuarios/protected/cambiarContrasena/:userId" element={<EditarPassword />} />
-          <Route path="/comentarios/protected/editarComentario/:id" element={<EditarComentario />} />
+          <Route path="/comentarios/protected/editarComentario/:id" element={<EditarComentario socket={socket} />} />
           <Route path="/preguntas/protected/editarPregunta/:id" element={<EditarPregunta />} />
-          <Route path="/productos/detalle/:id" element={<Producto isAuthenticated={isAuthenticated} setCart={setCart} addToCart={addToCart} user={user} />} />
+          <Route path="/productos/detalle/:id" element={<Producto isAuthenticated={isAuthenticated} socket={socket} user={user} />} />
           <Route path="/productos/:category" element={<ProductoCategoria />} />
-          <Route path="/productos/protected/agregarProducto" element={<AgregarProducto isAuthenticated={isAuthenticated} user={user} />} />
-          <Route path="/productos/protected/borrarProducto/:id" element={<BorrarProducto isAuthenticated={isAuthenticated} />} />
-          <Route path="/productos/protected/editarProducto/:id" element={<EditarProducto isAuthenticated={isAuthenticated} />} />
-          <Route path="/carrito/protected/comprar" element={<Carrito cart={cart} removeFromCart={removeFromCart} isAuthenticated={isAuthenticated} user={user} />} />
+          <Route path="/productos/protected/agregarProducto" element={<AgregarProducto socket={socket} isAuthenticated={isAuthenticated} user={user} />} />
+          <Route path="/productos/protected/borrarProducto/:id" element={<BorrarProducto socket={socket} isAuthenticated={isAuthenticated} />} />
+          <Route path="/productos/protected/editarProducto/:id" element={<EditarProducto socket={socket} isAuthenticated={isAuthenticated} />} />
+          <Route path="/carrito/protected/comprar" element={<Carrito socket={socket} isAuthenticated={isAuthenticated} user={user} />} />
         </Routes>
       </Layout>
     </>

@@ -3,10 +3,9 @@ import { Form, Button, Toast } from 'react-bootstrap';
 import { BiSolidCommentAdd } from "react-icons/bi";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import io from "socket.io-client";
 import { useAuth } from "../../../Context/authContext";
 
-function AgregarPregunta({ isAuthenticated, user }) {
+function AgregarPregunta({ isAuthenticated, user, socket }) {
     const { userId } = useAuth();
     const [newQuestion, setNewQuestion] = useState("");
     const [userName, setUserName] = useState("");
@@ -17,7 +16,6 @@ function AgregarPregunta({ isAuthenticated, user }) {
 
     const token = localStorage.getItem("jwtToken");
     const serverUrl = "http://localhost:8800";
-    const socket = io("http://localhost:8800");
 
     useEffect(() => {
         const fetchUserName = async () => {
@@ -59,12 +57,12 @@ function AgregarPregunta({ isAuthenticated, user }) {
                     },
                 });
 
+                socket.emit("pregunta-agregada", preguntaData);
+
                 if (response.status === 200) {
                     setNewQuestion("");
                     setShowToastPregunta(true);
                 }
-
-                socket.emit("pregunta-agregada", preguntaData);
 
                 setShowForm(false);
             } catch (err) {
@@ -78,32 +76,31 @@ function AgregarPregunta({ isAuthenticated, user }) {
     return (
         isAuthenticated && (
             <div className="nuevo-comentario form-container">
-                {showForm && (
-                    <Form>
-                        <Form.Group controlId="nombre">
-                            <Form.Label>Tu Nombre:</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Ingresa tu nombre"
-                                value={userName}
-                                onChange={handlePreguntaChange}
-                                disabled
-                            />
-                        </Form.Group>
-                        <Form.Group controlId="nuevaPregunta">
-                            <Form.Label>Deja tu pregunta:</Form.Label>
-                            <Form.Control
-                                as="textarea"
-                                rows={3}
-                                value={newQuestion}
-                                onChange={handlePreguntaChange}
-                            />
-                        </Form.Group>
-                        <Button onClick={handleSubmitPregunta} variant="primary" className="btn-pregunta">
-                            <BiSolidCommentAdd /> Pregunta
-                        </Button>
-                    </Form>
-                )}
+                <Form>
+                    <Form.Group controlId="nombre">
+                        <Form.Label>Tu Nombre:</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Ingresa tu nombre"
+                            value={userName}
+                            onChange={handlePreguntaChange}
+                            disabled
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="nuevaPregunta">
+                        <Form.Label>Deja tu pregunta:</Form.Label>
+                        <Form.Control
+                            as="textarea"
+                            rows={3}
+                            value={newQuestion}
+                            onChange={handlePreguntaChange}
+                        />
+                    </Form.Group>
+                    <Button onClick={handleSubmitPregunta} variant="primary" className="btn-pregunta">
+                        <BiSolidCommentAdd /> Pregunta
+                    </Button>
+                </Form>
+
                 <Toast
                     show={showToastPregunta}
                     onClose={() => setShowToastPregunta(false)}

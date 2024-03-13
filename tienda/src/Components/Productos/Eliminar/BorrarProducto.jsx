@@ -4,12 +4,10 @@ import axios from "axios";
 import { Container, Button } from "react-bootstrap";
 import io from "socket.io-client";
 
-function BorrarProducto({ isAuthenticated }) {
+function BorrarProducto({ isAuthenticated, socket }) {
     const [product, setProduct] = useState(null);
     const { id } = useParams();
     const navigate = useNavigate();
-
-    const socket = io("http://localhost:8800");
 
     useEffect(() => {
         const fetchProducto = async () => {

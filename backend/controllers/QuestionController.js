@@ -103,7 +103,7 @@ const QuestionController = {
 
     respondQuestion: async (req, res) => {
         const questionId = req.params.id;
-        const { text, userId } = req.body;
+        const { text, userId, name } = req.body;
 
         try {
             const user = await User.findById(userId).exec();
@@ -127,6 +127,7 @@ const QuestionController = {
 
             question.responses.push({
                 text,
+                name,
                 userId,
                 productId: product._id,
                 date: new Date(),

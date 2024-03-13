@@ -3,19 +3,20 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Row, Col, Button } from 'react-bootstrap';
 import { IoPencil, IoTrash } from "react-icons/io5";
 import axios from "axios";
-import io from "socket.io-client";
-import moment from "moment";
+import ResponderPregunta from "./Responder/ResponderPregunta";
 
-function Pregunta({ isAuthenticated, userId }) {
+function Pregunta({ isAuthenticated, userId, user, productCreatedByUser, socket }) {
     const navigate = useNavigate();
     const [questions, setQuestions] = useState([]);
+    const [showReplyForm, setShowReplyForm] = useState(false);
     const { id } = useParams();
 
-    const socket = io("http://localhost:8800");
+    const token = localStorage.getItem("jwtToken");
     const serverUrl = "http://localhost:8800";
 
     useEffect(() => {
         socket.connect();
+
         const fetchQuestions = async () => {
             try {
                 const preguntasRes = await axios.get(`${serverUrl}/productos/preguntas/${id}`);
@@ -48,21 +49,15 @@ function Pregunta({ isAuthenticated, userId }) {
         });
 
         socket.on("pregunta-eliminada", (preguntaEliminada) => {
-            setQuestions((prevQuestion) => prevQuestion.filter(question => question._id !== preguntaEliminada));
+            setQuestions((prevQuestion) => prevQuestion.filter(q => q._id !== preguntaEliminada));
         });
 
         socket.on("pregunta-respondida", (preguntaRespondida) => {
             setQuestions((prevQuestion) => [...prevQuestion, preguntaRespondida]);
         });
 
-        return () => {
-            socket.off("pregunta-agregada");
-            socket.off("pregunta-editada");
-            socket.off("pregunta-eliminada");
-            socket.off("pregunta-respondida");
-            socket.disconnect();
-        };
-    }, []);
+        socket.disconnect();
+    })
 
     const handleEliminarPregunta = async (preguntaId) => {
         try {
@@ -90,33 +85,43 @@ function Pregunta({ isAuthenticated, userId }) {
             ) : (
                 <Row>
                     <Col md={9}>
-                        {questions.length === 0 ? (
-                            <p>Sin preguntas</p>
-                        ) : (
-                            <div className="comentarios-list mt-3">
-                                {questions.map((question, index) => (
-                                    <div key={question._id || index} className="comentario">
-                                        {question.name && (
-                                            <p>
-                                                <strong key={`text-${question._id}-${index}`}>{question.name}:</strong>
-                                            </p>
-                                        )}
-                                        <p>{question.text}</p>
-                                        <p key={`date-${question._id}-${index}`}>Fecha: {moment(question.date).format('lll')}</p>
-                                        {isAuthenticated && userId && userId === question.user && (
-                                            <div className="inicio-link-container">
-                                                <Button variant="warning" onClick={() => navigate(`/preguntas/protected/editarPregunta/${question._id}`)}>
-                                                    <IoPencil />
-                                                </Button>
-                                                <Button variant="danger" onClick={() => handleEliminarPregunta(question._id)}>
-                                                    <IoTrash />
-                                                </Button>
-                                            </div>
-                                        )}
+                        {questions.map((question, index) => (
+                            <div key={question._id || index} className="comentario">
+                                {question.name && (
+                                    <p>
+                                        <strong key={`text-${question._id}-${index}`}>{question.name}:</strong>
+                                    </p>
+                                )}
+                                <p>{question.text}</p>
+                                {question.responses.length > 0 && (
+                                    <ul>
+                                        {question.responses.map((response, idx) => (
+                                            <li className="respuestas" key={idx}>
+                                                <strong>{response.name}</strong>: {response.text}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                                {isAuthenticated && userId === question.user && (
+                                    <div className="inicio-link-container">
+                                        <Button variant="warning" onClick={() => navigate(`/preguntas/protected/editarPregunta/${question._id}`)}>
+                                            <IoPencil />
+                                        </Button>
+                                        <Button variant="danger" onClick={() => handleEliminarPregunta(question._id)}>
+                                            <IoTrash />
+                                        </Button>
                                     </div>
-                                ))}
+                                )}
+                                {productCreatedByUser && userId && productCreatedByUser.trim() === userId.trim() && (
+                                    <Button variant="primary" onClick={() => setShowReplyForm(!showReplyForm)}>
+                                        Responder
+                                    </Button>
+                                )}
+                                {showReplyForm && productCreatedByUser !== null && userId === productCreatedByUser && (
+                                    <ResponderPregunta productCreatedByUser={productCreatedByUser} questionId={question._id} isAuthenticated={isAuthenticated} token={token} user={user} userId={userId} />
+                                )}
                             </div>
-                        )}
+                        ))}
                     </Col>
                 </Row>
             )}

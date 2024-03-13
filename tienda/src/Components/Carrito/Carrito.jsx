@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Button, Form, Toast, ToastContainer } from 'react-bootstrap';
-import { useAuth } from '../Context/authContext';
 import { useNavigate } from 'react-router-dom';
 import io from "socket.io-client";
+import { useAuth } from '../Context/authContext';
+import { useCart } from '../Context/CartContext';
 
-const Carrito = ({ cart, removeFromCart, isAuthenticated, user }) => {
+const Carrito = ({ isAuthenticated }) => {
+  const { userId } = useAuth();
+  const { removeFromCart, cart, setHasPurchased } = useCart();
   const [showCompraForm, setShowCompraForm] = useState(false);
   const [country, setCountry] = useState('');
   const [state, setState] = useState('');
@@ -14,7 +17,6 @@ const Carrito = ({ cart, removeFromCart, isAuthenticated, user }) => {
   const [phone, setPhone] = useState('');
   const [cardBank, setCardBank] = useState('');
   const [securityNumber, setSecurityNumber] = useState('');
-  const { userId } = useAuth();
   const [showToast, setShowToast] = useState(false);
   const [showEmptyCartToast, setShowEmptyCartToast] = useState(false);
   const navigate = useNavigate();
@@ -61,6 +63,7 @@ const Carrito = ({ cart, removeFromCart, isAuthenticated, user }) => {
         socket.emit("producto-comprado", response.data);
         socket.emit("producto-vendido", response.data);
         removeFromCart(productId);
+        setHasPurchased(true);
         setShowToast(true);
         navigate("/")
       }
